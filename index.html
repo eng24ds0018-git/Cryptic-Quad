@@ -296,14 +296,51 @@
         
         async function initializeFirebase() {
             try {
-                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                let firebaseConfig;
+                if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
+                    // Use the config provided by the development environment
+                    firebaseConfig = JSON.parse(__firebase_config);
+                } else {
+                    // **** IMPORTANT DEPLOYMENT INSTRUCTIONS ****
+                    // To deploy this game with online features, you must create your own Firebase project.
+                    // 1. Go to https://firebase.google.com/ and create a project.
+                    // 2. In Project Settings, create a new Web App (</>).
+                    // 3. Firebase will give you a `firebaseConfig` object. Copy its contents.
+                    // 4. Paste the values into the object below, replacing the placeholder text.
+                    // 5. In the Firebase console, go to "Build" > "Firestore Database". Create a database.
+                    //    Start in "test mode" for easy setup.
+                    // 6. Go to "Build" > "Authentication". On the "Sign-in method" tab, enable "Anonymous" sign-in.
+                    //
+                    // If you don't do this, online mode will be disabled on your website.
+                    const deployedFirebaseConfig = {
+  apiKey: "AIzaSyDEChwcDmmrXw_UZgWaDAU8iShFSbBv-l8",
+  authDomain: "cryptic-quad.firebaseapp.com",
+  projectId: "cryptic-quad",
+  storageBucket: "cryptic-quad.firebasestorage.app",
+  messagingSenderId: "301044450306",
+  appId: "1:301044450306:web:6fdf7e794677969734531b"
+};
+                    
+
+                    if (deployedFirebaseConfig.apiKey.startsWith("PASTE_")) {
+                         throw new Error("Firebase configuration is missing for deployment. Please read the comments in the HTML file.");
+                    }
+                    firebaseConfig = deployedFirebaseConfig;
+                }
+
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
+
+                // Sign in logic: use token if available (dev env), otherwise sign in anonymously (deployed site)
                 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                if (initialAuthToken) { await signInWithCustomToken(auth, initialAuthToken); } 
-                else { await signInAnonymously(auth); }
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
                 userId = auth.currentUser.uid;
+
                 console.log("Firebase initialized and user signed in:", userId);
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
@@ -716,8 +753,4 @@
     </script>
 </body>
 </html>
-
-
-
-
 
