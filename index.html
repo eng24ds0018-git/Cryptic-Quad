@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptic Quad Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <script>
+        // Set theme on initial load
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .font-marker {
+            font-family: 'Permanent Marker', cursive;
+        }
+        /* Custom styles for input field focus */
+        .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #4f46e5; /* Indigo-500 */
+        }
+        .dark .form-input:focus {
+             box-shadow: 0 0 0 2px #818cf8; /* Indigo-400 */
+        }
+
+        /* Style for the guess history table */
+        #guessHistory div:nth-child(even) { background-color: #f9fafb; }
+        #guessHistory div:nth-child(odd) { background-color: #ffffff; }
+        .dark #guessHistory div:nth-child(even) { background-color: rgba(55, 65, 81, 0.5); } /* gray-700/50 */
+        .dark #guessHistory div:nth-child(odd) { background-color: #1f2937; } /* gray-800 */
+
+        .hidden {
+            display: none;
+        }
+        /* Added for main message area */
+        .message-success { background-color: #d1fae5; color: #065f46; }
+        .dark .message-success { background-color: #064e3b; color: #a7f3d0; }
+        .message-error { background-color: #fee2e2; color: #991b1b; }
+        .dark .message-error { background-color: #7f1d1d; color: #fecaca; }
+        .message-info { background-color: #e0e7ff; color: #3730a3; }
+        .dark .message-info { background-color: #3730a3; color: #c7d2fe; }
+
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 flex items-center justify-center min-h-screen p-4 transition-colors duration-300">
+
+    <div class="w-full max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8">
+        
+        <header class="text-center mb-6 relative">
+            <h1 class="font-marker text-4xl md:text-5xl text-indigo-600 dark:text-indigo-400 transition-colors duration-300">Cryptic Quad</h1>
+            <p id="subheading" class="text-gray-500 dark:text-gray-400 mt-2">A 4-letter word guessing game.</p>
+            <button id="theme-toggle" class="absolute top-0 right-0 p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+                <svg id="theme-icon-light" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Message Area (for global messages) -->
+        <div id="mainMessageArea" class="text-center min-h-[2.5rem] mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
+
+        <!-- Mode Selection Screen -->
+        <div id="modeSelectionScreen">
+            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-300 mb-6">Choose a Game Mode</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button id="singlePlayerButton" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transform transition-transform duration-200 hover:scale-105 shadow-lg">
+                    Single Player
+                </button>
+                <button id="twoPlayerButton" class="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 transform transition-transform duration-200 hover:scale-105 shadow-lg">
+                    Two Player (Local)
+                </button>
+                 <button id="onlinePlayerButton" class="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transform transition-transform duration-200 hover:scale-105 shadow-lg">
+                    Two Player (Online)
+                </button>
+            </div>
+             <div class="text-center mt-6">
+                <button id="howToPlayButton" class="bg-gray-500 dark:bg-gray-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-500 transition-colors duration-300 shadow-md">
+                    How to Play
+                </button>
+            </div>
+        </div>
+        
+        <!-- Online Lobby Screen -->
+        <div id="onlineLobbyScreen" class="hidden text-center">
+            <h2 class="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-6">Online Multiplayer</h2>
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Create a New Game</h3>
+                    <button id="createOnlineGameButton" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 shadow-lg">Create Game</button>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold mb-2">Or Join an Existing Game</h3>
+                    <div class="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+                        <input type="text" id="joinGameIdInput" placeholder="Enter Game ID..." class="form-input flex-grow w-full px-4 py-3 text-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-lg">
+                        <button id="joinOnlineGameButton" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 shadow-lg">Join Game</button>
+                    </div>
+                </div>
+            </div>
+            <div id="gameIdDisplay" class="mt-6 hidden">
+                <h3 class="text-lg font-semibold">Game Created!</h3>
+                <p>Share this ID with your friend:</p>
+                <div class="flex items-center justify-center gap-2 mt-2 bg-gray-200 dark:bg-gray-700 p-3 rounded-lg max-w-xs mx-auto">
+                    <strong id="gameIdText" class="text-2xl font-mono text-indigo-600 dark:text-indigo-400"></strong>
+                    <button id="copyGameIdButton" class="p-2 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600">
+                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    </button>
+                </div>
+                <p class="mt-4 text-gray-500 dark:text-gray-400 animate-pulse">Waiting for another player to join...</p>
+            </div>
+             <button id="backToMenuFromOnline" class="mt-8 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">Back to Main Menu</button>
+        </div>
+
+        <!-- Difficulty Selection Screen (Restored) -->
+        <div id="difficultySelectionScreen" class="hidden text-center">
+             <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-300 mb-6">Select Difficulty</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <button data-difficulty="beginner" class="difficulty-btn bg-green-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-4 focus:ring-green-300 transform transition-transform duration-200 hover:scale-105 shadow-lg">
+                    Beginner
+                </button>
+                <button data-difficulty="intermediate" class="difficulty-btn bg-yellow-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-4 focus:ring-yellow-300 transform transition-transform duration-200 hover:scale-105 shadow-lg">
+                    Intermediate
+                </button>
+                <button data-difficulty="pro" class="difficulty-btn bg-red-500 text-white font-bold py-3 px-6 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transform transition-transform duration-200 hover:scale-105 shadow-lg">
+                    Pro
+                </button>
+            </div>
+            <button id="backToMenuFromDiff" class="mt-8 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">Back to Main Menu</button>
+        </div>
+
+        <!-- How to Play Screen (Restored) -->
+        <div id="howToPlayScreen" class="hidden prose dark:prose-invert max-w-none">
+            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-300 mb-6">How to Play</h2>
+            <p>Cryptic Quad is a code-breaking game where you have to guess a secret 4-letter word.</p>
+            <ul>
+                <li>The word has <strong>no repeating consecutive letters</strong> (e.g., 'tree' is invalid, but 'pump' is valid).</li>
+                <li>You get feedback on your guess in the form of "Cows" and "Bulls".</li>
+            </ul>
+            <h3 class="font-semibold mt-4">What are Cows and Bulls?</h3>
+            <p><strong>🐮 Cow:</strong> A correct letter in the correct position.</p>
+            <p><strong>🐃 Bull:</strong> A correct letter but in the wrong position.</p>
+            <h3 class="font-semibold mt-4">Example Gameplay</h3>
+            <p>Let's say the secret word is <strong>WORD</strong>.</p>
+            <div class="bg-gray-100 dark:bg-gray-700/50 p-4 rounded-lg my-4">
+                <p>You guess: <strong>WORK</strong></p>
+                <p><strong>Result:</strong> 3 Cows (W, O, R are correct and in position), 0 Bulls.</p>
+            </div>
+            <div class="bg-gray-100 dark:bg-gray-700/50 p-4 rounded-lg my-4">
+                <p>You guess: <strong>DREW</strong></p>
+                <p><strong>Result:</strong> 1 Cow (D is correct and in position), 2 Bulls (R and E are in the word, but wrong spots).</p>
+            </div>
+            <p>Keep guessing until you get 4 Cows! Good luck!</p>
+            <div class="text-center mt-6">
+                 <button id="backToMenuFromHelp" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Got it!</button>
+            </div>
+        </div>
+
+        <!-- Set Word Screen (for 2-player local and online mode) -->
+        <div id="setWordScreen" class="hidden text-center">
+            <h2 id="setWordTitle" class="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-2">Set the Secret Word</h2>
+            <p id="setWordSubtitle" class="text-gray-500 dark:text-gray-400 mb-4">Enter a 4-letter word for the other player to guess.</p>
+            <div id="setWordMessageArea" class="text-center min-h-[2.5rem] mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
+            <div class="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+                <input type="password" id="secretWordInput" maxlength="4" placeholder="Enter secret word..."
+                       class="form-input flex-grow w-full px-4 py-3 text-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg transition duration-300 focus:border-green-500 dark:focus:border-green-400">
+                <button id="startGameButton"
+                        class="w-full sm:w-auto bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 shadow-lg">
+                    Start Game
+                </button>
+            </div>
+            <button id="backToMenuFromSet" class="mt-4 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">Back to Menu</button>
+        </div>
+        
+        <!-- Main Game Screen -->
+        <div id="gameScreen" class="hidden">
+            <div class="flex flex-col md:flex-row md:gap-8">
+                <!-- Left Panel: Game Controls -->
+                <div class="w-full md:w-2/3">
+                    <div class="flex flex-col sm:flex-row gap-3 mb-4">
+                        <input type="text" id="guessInput" maxlength="4" placeholder="Enter your guess..."
+                            class="form-input flex-grow w-full px-4 py-3 text-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 rounded-lg transition duration-300 focus:border-indigo-500 dark:focus:border-indigo-400">
+                        <button id="guessButton"
+                                class="w-full sm:w-auto bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transform transition-transform duration-200 hover:scale-105 shadow-lg">
+                            Guess
+                        </button>
+                    </div>
+                    
+                    <div class="flex justify-center gap-4 mb-6">
+                        <button id="quitButton"
+                                class="bg-red-500 text-white font-bold py-2 px-5 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transition-colors duration-300 shadow-md">
+                            Quit & Reveal
+                        </button>
+                    </div>
+
+                    <div id="messageArea" class="text-center min-h-[2.5rem] mt-8 mb-4 font-medium text-lg flex items-center justify-center p-2 rounded-lg"></div>
+                </div>
+
+                <!-- Right Panel: Guess History -->
+                <div class="w-full md:w-1/3">
+                     <div id="historyContainer">
+                        <div class="grid grid-cols-3 gap-2 text-center font-bold text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-700/50 p-2 rounded-t-lg">
+                            <div>Guess</div>
+                            <div>Cows 🐮</div>
+                            <div>Bulls 🐃</div>
+                        </div>
+                        <div id="guessHistory" class="border border-gray-200 dark:border-gray-700 rounded-b-lg max-h-80 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase -->
+    <script type="module">
+        // --- Firebase SDK Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Word Lists (unchanged) ---
+        const beginnerWords = ['acid', 'also', 'back', 'band', 'bank', 'bare', 'base', 'beam', 'bean', 'bear', 'beat', 'belt', 'bend', 'best', 'bike', 'bird', 'blow', 'blue', 'boat', 'body', 'bold', 'bond', 'bone', 'born', 'both', 'bowl', 'burn', 'cake', 'calm', 'came', 'camp', 'card', 'care', 'case', 'cash', 'cast', 'cave', 'city', 'club', 'coal', 'coat', 'code', 'coin', 'cold', 'come', 'cone', 'copy', 'cord', 'core', 'corn', 'cost', 'dark', 'date', 'dawn', 'deal', 'deck', 'desk', 'dirt', 'dish', 'dock', 'done', 'down', 'drag', 'draw', 'drip', 'drop', 'duck', 'dust', 'earn', 'east', 'easy', 'face', 'fact', 'fade', 'fail', 'fair', 'fake', 'farm', 'fast', 'fear', 'file', 'film', 'find', 'fine', 'fire', 'firm', 'fish', 'five', 'flag', 'flat', 'flow', 'fold', 'font', 'ford', 'fork', 'form', 'four', 'from', 'fuel', 'game', 'gate', 'gave', 'gift', 'give', 'glad', 'glow', 'goal', 'goat', 'gold', 'gone', 'grab', 'gray', 'grid', 'grow', 'gulf', 'hair', 'half', 'hand', 'hang', 'hard', 'harm', 'hate', 'have', 'head', 'heal', 'heap', 'hear', 'heat', 'help', 'herd', 'here', 'hide', 'high', 'hike', 'hint', 'hold', 'hole', 'home', 'hope', 'horn', 'hour', 'hunt', 'hurt', 'idea', 'into', 'iron', 'item', 'join', 'joke', 'jump', 'just', 'kept', 'kind', 'king', 'know', 'lack', 'lady', 'lake', 'lamp', 'land', 'lane', 'last', 'late', 'lawn', 'lead', 'leaf', 'leak', 'lean', 'left', 'lend', 'life', 'lift', 'like', 'limb', 'line', 'link', 'lion', 'list', 'live', 'load', 'loan', 'lock', 'lone', 'long', 'lord', 'lose', 'lost', 'love', 'luck', 'made', 'mail', 'main', 'make', 'male', 'many', 'mark', 'mask', 'mate', 'meal', 'mean', 'meat', 'mend', 'mild', 'mile', 'milk', 'mind', 'mine', 'mist', 'mode', 'mold', 'mole', 'more', 'most', 'move', 'much', 'must', 'nail', 'name', 'near', 'neat', 'neck', 'nest', 'news', 'next', 'nice', 'nine', 'north', 'nose', 'note', 'open', 'oral', 'oven', 'over', 'page', 'paid', 'pain', 'pair', 'pale', 'park', 'part', 'past', 'path', 'pave', 'pick', 'pile', 'pine', 'pink', 'pipe', 'plan', 'play', 'plot', 'plug', 'plus', 'poem', 'poet', 'poke', 'pole', 'pond', 'pork', 'port', 'post', 'pure', 'push', 'race', 'rack', 'raft', 'rail', 'rain', 'rake', 'ramp', 'rank', 'rate', 'read', 'real', 'rely', 'rent', 'rest', 'rice', 'rich', 'ride', 'ring', 'rise', 'risk', 'road', 'roam', 'robe', 'rock', 'rode', 'role', 'rope', 'rosy', 'ruin', 'rule', 'rush', 'rust', 'safe', 'said', 'sail', 'sake', 'sale', 'salt', 'same', 'sand', 'sane', 'sang', 'save', 'scab', 'scan', 'scar', 'seal', 'seam', 'seat', 'self', 'send', 'sent', 'ship', 'shot', 'show', 'shut', 'sick', 'side', 'sigh', 'sign', 'silk', 'sing', 'sink', 'site', 'size', 'skin', 'skip', 'slab', 'slam', 'slap', 'sled', 'slid', 'slim', 'slip', 'slot', 'slow', 'snap', 'snow', 'soak', 'soap', 'soft', 'soil', 'sold', 'sole', 'some', 'song', 'sore', 'sort', 'soul', 'soup', 'sour', 'star', 'stay', 'stem', 'step', 'stop', 'such', 'suit', 'sure', 'surf', 'swim', 'tack', 'tail', 'take', 'tale', 'talk', 'tame', 'tank', 'tape', 'task', 'team', 'tear', 'tend', 'tent', 'term', 'text', 'than', 'that', 'them', 'then', 'they', 'thin', 'this', 'tide', 'tidy', 'tile', 'time', 'tiny', 'tire', 'tomb', 'tone', 'took', 'tour', 'town', 'trap', 'tray', 'trim', 'trio', 'trip', 'true', 'tube', 'tune', 'turn', 'twin', 'type', 'unit', 'upon', 'used', 'user', 'vain', 'vast', 'vein', 'vent', 'verb', 'very', 'vest', 'view', 'vote', 'wade', 'wait', 'wake', 'walk', 'wand', 'want', 'ward', 'ware', 'warm', 'warn', 'wash', 'wave', 'weak', 'wear', 'went', 'were', 'west', 'what', 'when', 'wide', 'wife', 'wild', 'wind', 'wine', 'wink', 'wipe', 'wire', 'wise', 'wish', 'with', 'woke', 'wolf', 'word', 'wore', 'work', 'worm', 'worn', 'wrap', 'yard', 'yarn', 'yawn', 'year', 'your'];
+        const intermediateWords = ['aged', 'aunt', 'axis', 'barn', 'bath', 'bind', 'bite', 'blur', 'boil', 'bolt', 'bomb', 'bony', 'brag', 'brew', 'brim', 'buck', 'bulk', 'bury', 'bush', 'bust', 'busy', 'byte', 'cane', 'cape', 'chat', 'chef', 'chew', 'chin', 'chip', 'chop', 'cite', 'clam', 'clan', 'clap', 'claw', 'clay', 'clip', 'clue', 'colt', 'conk', 'cork', 'cozy', 'crab', 'cram', 'crew', 'crib', 'crow', 'cube', 'cult', 'curb', 'cure', 'curl', 'curt', 'curv', 'cute', 'damp', 'dare', 'darn', 'dart', 'dash', 'deaf', 'debt', 'deny', 'dent', 'dial', 'dice', 'diet', 'dime', 'dine', 'disc', 'dive', 'does', 'dole', 'dome', 'dont', 'dose', 'dote', 'drab', 'dram', 'drew', 'drug', 'drum', 'dual', 'duct', 'duel', 'duet', 'duke', 'duly', 'dumb', 'dump', 'dune', 'dunk', 'dusk', 'duty', 'echo', 'edge', 'edit', 'else', 'envy', 'epic', 'even', 'evil', 'exam', 'exit', 'fang', 'fate', 'fawn', 'feat', 'feud', 'fink', 'fist', 'flak', 'flan', 'flap', 'flaw', 'flax', 'flea', 'fled', 'flew', 'flex', 'flip', 'flog', 'flub', 'flux', 'foal', 'foam', 'foci', 'foil', 'folk', 'foul', 'fowl', 'frag', 'fray', 'fume', 'fund', 'funk', 'fury', 'fuse', 'gain', 'gaze', 'gear', 'gnaw', 'grad', 'gram', 'grim', 'grin', 'grip', 'grub', 'gunk', 'guru', 'gust', 'guts', 'hack', 'hail', 'halo', 'halt', 'hark', 'harp', 'haul', 'hawk', 'haze', 'hazy', 'heir', 'hemp', 'herb', 'hero', 'hoax', 'homy', 'honk', 'hose', 'host', 'huge', 'hulk', 'hump', 'hung', 'hurl', 'hush', 'husk', 'hymn', 'hype', 'icon', 'idle', 'idol', 'inch', 'info', 'jail', 'jolt', 'junk', 'jury', 'keys', 'kick', 'kilo', 'kite', 'kiwi', 'knob', 'knot', 'lace', 'laid', 'lair', 'lamb', 'lame', 'lank', 'lard', 'lark', 'lava', 'lazy', 'lens', 'lent', 'lobe', 'loft', 'loin', 'lore', 'lout', 'lows', 'lump', 'lung', 'lure', 'lurk', 'lush', 'lust', 'lynx', 'lyre', 'maid', 'malt', 'mane', 'maps', 'mare', 'mars', 'mast', 'maul', 'maze', 'mead', 'meld', 'melt', 'memo', 'meow', 'mercy', 'mesh', 'mice', 'mime', 'mink', 'mint', 'mire', 'mite', 'moan', 'moat', 'mock', 'molt', 'monk', 'moth', 'muck', 'mule', 'murk', 'muse', 'mush', 'mute', 'myth', 'navy', 'nerd', 'node', 'noisy', 'nope', 'numb', 'oath', 'obey', 'onyx', 'opal', 'ouch', 'oust', 'oval', 'pact', 'pail', 'palm', 'pane', 'pant', 'pawn', 'peak', 'pear', 'pelt', 'perk', 'pest', 'pike', 'pint', 'pity', 'plea', 'plod', 'plop', 'plow', 'plum', 'pram', 'prey', 'prod', 'prom', 'prop', 'prow', 'puck', 'puke', 'pulp', 'puma', 'pump', 'punk', 'punt', 'puny', 'putz', 'quip', 'raft', 'rage', 'raid', 'rand', 'rant', 'rapt', 'rare', 'rash', 'rave', 'raze', 'ream', 'reap', 'redo', 'rife', 'rift', 'rime', 'rink', 'roan', 'roar', 'romp', 'rote', 'rout', 'rove', 'rube', 'ruby', 'rude', 'rump', 'rune', 'rung', 'runt', 'ruse', 'rusk', 'sack', 'scam', 'scat', 'scow', 'scum', 'sect', 'serf', 'shag', 'sham', 'shed', 'shim', 'shod', 'shun', 'silo', 'skew', 'skid', 'skim', 'slag', 'slat', 'slay', 'slew', 'slit', 'slob', 'slog', 'slug', 'slum', 'slur', 'smog', 'smug', 'snag', 'snip', 'snit', 'snob', 'snot', 'snub', 'snug', 'sock', 'soda', 'sofa', 'solo', 'spam', 'span', 'spar', 'spat', 'spay', 'spec', 'spin', 'spit', 'spot', 'spud', 'spur', 'stab', 'stag', 'stew', 'stir', 'stow', 'stub', 'stud', 'stun', 'sued', 'suet', 'sumo', 'sung', 'sunk', 'swab', 'swag', 'swam', 'swan', 'swap', 'swat', 'sway', 'swig', 'swum', 'taco', 'tact', 'tamp', 'taps', 'tare', 'tarp', 'taxi', 'tech', 'thaw', 'thud', 'thug', 'thus', 'tick', 'tier', 'tine', 'ting', 'tint', 'toad', 'tong', 'tony', 'torn', 'tout', 'toys', 'tram', 'trod', 'trot', 'tuck', 'tuna', 'turf', 'tusk', 'twig', 'twit', 'typo', 'ugly', 'unto', 'vamp', 'vane', 'vary', 'veal', 'vend', 'veto', 'vial', 'vibe', 'vice', 'vine', 'visa', 'void', 'volt', 'waif', 'warp', 'wart', 'wary', 'wasp', 'wavy', 'webs', 'weld', 'welt', 'wept', 'whet', 'whey', 'whim', 'whip', 'whit', 'whom', 'wick', 'wile', 'wilt', 'wimp', 'wino', 'wisp', 'wove', 'wren', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'yule', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk'];
+        const proWords = ['quiz', 'jury', 'jump', 'joke', 'jolt', 'junk', 'kiwi', 'knob', 'lynx', 'myth', 'onyx', 'pulp', 'pump', 'quad', 'quip', 'quit', 'quiz', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk', 'flux', 'jinx', 'hymn', 'hype', 'trek', 'whiz', 'foxy', 'jock', 'jowl', 'judo', 'kemp', 'kept', 'perk', 'phew', 'pyx'];
+        
+        // --- DOM Elements (Restored & organized) ---
+        const allScreens = document.querySelectorAll('.w-full.max-w-4xl > div:not(header):not(#mainMessageArea)');
+        const subheading = document.getElementById('subheading');
+        // Theme
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeIconLight = document.getElementById('theme-icon-light');
+        const themeIconDark = document.getElementById('theme-icon-dark');
+        // Screens
+        const modeSelectionScreen = document.getElementById('modeSelectionScreen');
+        const difficultySelectionScreen = document.getElementById('difficultySelectionScreen');
+        const howToPlayScreen = document.getElementById('howToPlayScreen');
+        const setWordScreen = document.getElementById('setWordScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const onlineLobbyScreen = document.getElementById('onlineLobbyScreen');
+        // Buttons
+        const singlePlayerButton = document.getElementById('singlePlayerButton');
+        const twoPlayerButton = document.getElementById('twoPlayerButton');
+        const onlinePlayerButton = document.getElementById('onlinePlayerButton');
+        const howToPlayButton = document.getElementById('howToPlayButton');
+        const backToMenuFromDiff = document.getElementById('backToMenuFromDiff');
+        const backToMenuFromHelp = document.getElementById('backToMenuFromHelp');
+        const backToMenuFromSet = document.getElementById('backToMenuFromSet');
+        const startGameButton = document.getElementById('startGameButton');
+        const guessButton = document.getElementById('guessButton');
+        const quitButton = document.getElementById('quitButton');
+        // Online Buttons
+        const createOnlineGameButton = document.getElementById('createOnlineGameButton');
+        const joinOnlineGameButton = document.getElementById('joinOnlineGameButton');
+        const copyGameIdButton = document.getElementById('copyGameIdButton');
+        const backToMenuFromOnline = document.getElementById('backToMenuFromOnline');
+        // Inputs & Display
+        const secretWordInput = document.getElementById('secretWordInput');
+        const guessInput = document.getElementById('guessInput');
+        const messageArea = document.getElementById('messageArea');
+        const mainMessageArea = document.getElementById('mainMessageArea');
+        const guessHistory = document.getElementById('guessHistory');
+        const setWordTitle = document.getElementById('setWordTitle');
+        const setWordSubtitle = document.getElementById('setWordSubtitle');
+        // Online Display
+        const gameIdDisplay = document.getElementById('gameIdDisplay');
+        const gameIdText = document.getElementById('gameIdText');
+        const joinGameIdInput = document.getElementById('joinGameIdInput');
+        
+        // --- Game State & Firebase ---
+        let db, auth, userId;
+        let secretWord = '';
+        let gameOver = false;
+        let gameMode = null; // 'single', 'twoPlayerLocal', 'twoPlayerOnline'
+        let attemptCount = 0;
+        let onlineGameUnsubscribe = null;
+        let currentOnlineGameId = null; // Robustly track the current game ID
+        let currentOnlineGameData = null; // Store the latest game data
+        
+        // --- Firebase Config & Init ---
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        
+        async function initializeFirebase() {
+            try {
+                const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (initialAuthToken) { await signInWithCustomToken(auth, initialAuthToken); } 
+                else { await signInAnonymously(auth); }
+                userId = auth.currentUser.uid;
+                console.log("Firebase initialized and user signed in:", userId);
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                showMainMessage("Could not connect to online services. Online mode is disabled.", "error");
+                onlinePlayerButton.disabled = true;
+                onlinePlayerButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // --- Core UI & Helper Functions (Restored) ---
+        function showScreen(screenToShow) {
+            allScreens.forEach(screen => screen.classList.add('hidden'));
+            screenToShow.classList.remove('hidden');
+        }
+        
+        function showMessage(text, type = 'info', area = messageArea) {
+            area.textContent = text;
+            area.className = `text-center min-h-[2.5rem] mt-4 mb-4 font-medium text-lg flex items-center justify-center p-2 rounded-lg message-${type}`;
+            area.classList.remove('hidden');
+        }
+
+        function showMainMessage(text, type = 'info') {
+            showMessage(text, type, mainMessageArea);
+            setTimeout(() => mainMessageArea.classList.add('hidden'), 3000);
+        }
+
+        function hasConsecutiveDuplicates(word) {
+            for (let i = 0; i < word.length - 1; i++) {
+                if (word[i] === word[i+1]) return true;
+            }
+            return false;
+        }
+
+        function getSecretWord(difficulty) {
+            const wordList = {
+                beginner: beginnerWords,
+                intermediate: intermediateWords,
+                pro: proWords
+            }[difficulty];
+            return wordList[Math.floor(Math.random() * wordList.length)];
+        }
+
+        function validateWord(word) {
+            if (word.length !== 4) return "Word must be 4 letters long.";
+            if (!/^[a-z]+$/.test(word)) return "Word must contain only letters.";
+            // Simplified and corrected: This rule applies to all game modes now.
+            if (hasConsecutiveDuplicates(word)) {
+                return "Word cannot have consecutive identical letters (e.g., 'tree').";
+            }
+            return null; // No error
+        }
+        
+        function initializeGameUI(resetSecret = true, difficulty = 'beginner') {
+            gameOver = false;
+            attemptCount = 0;
+            guessHistory.innerHTML = '';
+            messageArea.classList.add('hidden');
+            guessInput.value = '';
+            guessInput.disabled = false;
+            guessButton.disabled = false;
+            quitButton.textContent = 'Quit & Reveal';
+            if (resetSecret) {
+                secretWord = getSecretWord(difficulty);
+                console.log(`Secret word (${difficulty}):`, secretWord); // For debugging
+            }
+            showScreen(gameScreen);
+            guessInput.focus();
+        }
+
+        // --- Local Game Logic (Restored) ---
+        function handleGuess() {
+            if (gameOver) return;
+            const guess = guessInput.value.toLowerCase();
+            const validationError = validateWord(guess);
+            if (validationError) {
+                showMessage(validationError, 'error');
+                return;
+            }
+            attemptCount++;
+            let cows = 0; let bulls = 0;
+            const secretLetters = secretWord.split('');
+            const guessLetters = guess.split('');
+
+            for (let i = 0; i < 4; i++) { if (guessLetters[i] === secretLetters[i]) { cows++; secretLetters[i] = null; guessLetters[i] = null; } }
+            for(let i = 0; i < 4; i++){ if(guessLetters[i] === null) continue; const bullIndex = secretLetters.indexOf(guessLetters[i]); if(bullIndex !== -1) { bulls++; secretLetters[bullIndex] = null; } }
+            
+            updateHistory([{ guess, cows, bulls }]); // Re-using online history updater
+            
+            if (cows === 4) {
+                gameOver = true;
+                showMessage(`You guessed it in ${attemptCount} attempts! The word was "${secretWord}".`, 'success');
+                guessInput.disabled = true;
+                guessButton.disabled = true;
+                quitButton.textContent = 'Main Menu';
+            } else {
+                messageArea.classList.add('hidden');
+            }
+            guessInput.value = '';
+            guessInput.focus();
+        }
+
+        // --- NEW: Robust Clipboard Function ---
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showMainMessage('Game ID copied!', 'success');
+                }).catch(err => {
+                    console.error('Async copy failed:', err);
+                    copyFallback(text); // Try fallback if modern method fails
+                });
+            } else {
+                copyFallback(text); // Fallback for older browsers or insecure contexts
+            }
+        }
+
+        function copyFallback(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.top = '-9999px';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showMainMessage('Game ID copied!', 'success');
+                } else {
+                    showMainMessage('Copy failed. Please copy manually.', 'error');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                showMainMessage('Copy failed. Please copy manually.', 'error');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // --- Online Multiplayer Logic (Fixed & Refactored) ---
+        async function createOnlineGame() {
+            if (!userId) { showMainMessage("You must be logged in to create a game.", "error"); return; }
+            currentOnlineGameId = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
+            try {
+                await setDoc(gameRef, { player1: userId, player2: null, secretWord: null, guesses: [], gameState: 'waiting_for_player', winner: null, createdAt: serverTimestamp() });
+                gameIdText.textContent = currentOnlineGameId;
+                gameIdDisplay.classList.remove('hidden');
+                joinGameIdInput.disabled = true;
+                joinOnlineGameButton.disabled = true;
+                createOnlineGameButton.disabled = true;
+                listenToGameUpdates(currentOnlineGameId);
+            } catch (error) { console.error("Error creating game:", error); showMainMessage("Failed to create online game.", "error"); }
+        }
+
+        async function joinOnlineGame() {
+            if (!userId) {
+                showMainMessage("You must be logged in to join a game.", "error");
+                return;
+            }
+            const gameId = joinGameIdInput.value.trim().toUpperCase();
+            if (!gameId) {
+                showMainMessage("Please enter a Game ID.", "error");
+                return;
+            }
+        
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, gameId);
+        
+            try {
+                const gameDoc = await getDoc(gameRef);
+        
+                if (!gameDoc.exists()) {
+                    showMainMessage("No game found with that ID. Please check for typos.", "error");
+                    return;
+                }
+        
+                const gameData = gameDoc.data();
+
+                if (gameData.player1 === userId) {
+                    showMainMessage("You cannot join your own game.", "error");
+                    return;
+                }
+        
+                if (gameData.player2 !== null) {
+                    showMainMessage("This game is already full.", "error");
+                    return;
+                }
+        
+                if (gameData.gameState !== 'waiting_for_player') {
+                    showMainMessage("This game is not available to join right now.", "error");
+                    return;
+                }
+        
+                // All checks passed, proceed to join
+                currentOnlineGameId = gameId;
+                await updateDoc(gameRef, { player2: userId, gameState: 'waiting_for_word' });
+                listenToGameUpdates(currentOnlineGameId);
+        
+            } catch (error) {
+                console.error("Error joining game:", error);
+                showMainMessage("An error occurred while trying to join the game.", "error");
+            }
+        }
+
+        function listenToGameUpdates(gameId) {
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, gameId);
+            onlineGameUnsubscribe = onSnapshot(gameRef, (doc) => { 
+                currentOnlineGameData = doc.data();
+                handleGameStateChange(currentOnlineGameData); 
+            });
+        }
+        
+        function handleGameStateChange(gameData) {
+            if (!gameData) { goToMainMenu(); showMainMessage("The game session has ended.", "info"); return; }
+            const isPlayer1 = gameData.player1 === userId;
+            const isPlayer2 = gameData.player2 === userId;
+            switch (gameData.gameState) {
+                case 'waiting_for_player':
+                    subheading.textContent = `Game ID: ${currentOnlineGameId}. Waiting for friend...`;
+                    break;
+                case 'waiting_for_word':
+                    if (isPlayer1) {
+                        setWordTitle.textContent = "Player 1: Set the Secret Word";
+                        setWordSubtitle.textContent = "Enter the word for Player 2 to guess.";
+                        startGameButton.onclick = () => setOnlineSecretWord();
+                        showScreen(setWordScreen);
+                    } else if (isPlayer2) {
+                        subheading.textContent = "Waiting for Player 1 to set the secret word...";
+                        initializeGameUI(false);
+                        guessInput.disabled = true;
+                        guessButton.disabled = true;
+                    }
+                    break;
+                case 'player2_turn':
+                    secretWord = gameData.secretWord;
+                    subheading.textContent = isPlayer2 ? "Your turn to guess!" : "Waiting for Player 2's guess...";
+                    initializeGameUI(false);
+                    guessInput.disabled = !isPlayer2;
+                    guessButton.disabled = !isPlayer2;
+                    guessButton.onclick = () => handleOnlineGuess(gameData);
+                    updateHistory(gameData.guesses, true);
+                    break;
+                case 'game_over':
+                    gameOver = true; // Set the global game over flag
+                    secretWord = gameData.secretWord;
+                    initializeGameUI(false);
+                    updateHistory(gameData.guesses, true);
+                    guessInput.disabled = true;
+                    guessButton.disabled = true;
+                    const winnerIsYou = gameData.winner === userId;
+                    if (gameData.winner) {
+                         showMessage(winnerIsYou ? `You won in ${gameData.guesses.length} attempts! The word was "${secretWord}".` : `The other player won! The word was "${secretWord}".`, 'success');
+                    } else { 
+                        showMessage(`The other player has left the game. The word was "${secretWord}".`, 'info'); 
+                    }
+                    quitButton.textContent = 'Main Menu';
+                    break;
+            }
+        }
+        
+        async function setOnlineSecretWord() {
+            const word = secretWordInput.value.toLowerCase();
+            const validationError = validateWord(word);
+            if (validationError) { 
+                showMessage(validationError, 'error', document.getElementById('setWordMessageArea')); 
+                return; 
+            }
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
+            await updateDoc(gameRef, { secretWord: word, gameState: 'player2_turn' });
+        }
+
+        async function handleOnlineGuess(gameData) {
+            if (gameOver) return;
+            const guess = guessInput.value.toLowerCase();
+            if (validateWord(guess)) { showMessage(validateWord(guess), 'error'); return; }
+            let cows = 0, bulls = 0;
+            const secretLetters = gameData.secretWord.split(''); const guessLetters = guess.split('');
+            for (let i = 0; i < 4; i++) { if (guessLetters[i] === secretLetters[i]) { cows++; secretLetters[i] = null; guessLetters[i] = null; } }
+            for(let i = 0; i < 4; i++){ if(guessLetters[i] === null) continue; const bullIndex = secretLetters.indexOf(guessLetters[i]); if(bullIndex !== -1) { bulls++; secretLetters[bullIndex] = null; } }
+            const newGuess = { guess, cows, bulls };
+            const updatedGuesses = [...gameData.guesses, newGuess];
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
+            if (cows === 4) { await updateDoc(gameRef, { guesses: updatedGuesses, gameState: 'game_over', winner: userId }); } 
+            else { await updateDoc(gameRef, { guesses: updatedGuesses }); }
+            guessInput.value = ''; guessInput.focus();
+        }
+
+        function updateHistory(guesses, clearFirst = false) {
+            if (clearFirst) guessHistory.innerHTML = '';
+            guesses.forEach(({ guess, cows, bulls }) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'grid grid-cols-3 gap-2 text-center p-2 text-gray-800 dark:text-gray-200';
+                historyItem.innerHTML = `<div class="font-mono text-lg tracking-widest">${guess.toUpperCase()}</div><div class="font-bold text-lg">${cows}</div><div class="font-bold text-lg">${bulls}</div>`;
+                guessHistory.appendChild(historyItem);
+            });
+            guessHistory.scrollTop = guessHistory.scrollHeight;
+        }
+        
+        function updateThemeIcons() {
+            if (document.documentElement.classList.contains('dark')) {
+                themeIconLight.classList.add('hidden');
+                themeIconDark.classList.remove('hidden');
+            } else {
+                themeIconLight.classList.remove('hidden');
+                themeIconDark.classList.add('hidden');
+            }
+        }
+
+        function goToMainMenu() {
+            if (onlineGameUnsubscribe) { onlineGameUnsubscribe(); onlineGameUnsubscribe = null; }
+            currentOnlineGameId = null;
+            gameIdDisplay.classList.add('hidden');
+            joinGameIdInput.disabled = false;
+            joinGameIdInput.value = '';
+            joinOnlineGameButton.disabled = false;
+            createOnlineGameButton.disabled = false;
+            showScreen(modeSelectionScreen);
+            subheading.textContent = 'A 4-letter word guessing game.';
+        }
+
+        // --- Event Listeners Setup ---
+        function setupEventListeners() {
+            themeToggleBtn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                updateThemeIcons();
+            });
+
+            // Menu Buttons
+            singlePlayerButton.addEventListener('click', () => { gameMode = 'single'; showScreen(difficultySelectionScreen); });
+            twoPlayerButton.addEventListener('click', () => {
+                gameMode = 'twoPlayerLocal';
+                setWordTitle.textContent = "Player 1: Set the Secret Word";
+                setWordSubtitle.textContent = "Enter a word for Player 2 to guess. Don't let them see!";
+                startGameButton.onclick = () => {
+                    secretWord = secretWordInput.value.toLowerCase();
+                    const validationError = validateWord(secretWord);
+                    // FIXED: Show message in the correct area on the setWordScreen
+                    if (validationError) { 
+                        showMessage(validationError, 'error', document.getElementById('setWordMessageArea')); 
+                        return; 
+                    }
+                    initializeGameUI(false);
+                };
+                showScreen(setWordScreen);
+            });
+            onlinePlayerButton.addEventListener('click', () => { gameMode = 'twoPlayerOnline'; showScreen(onlineLobbyScreen); });
+            howToPlayButton.addEventListener('click', () => showScreen(howToPlayScreen));
+
+            // Back Buttons
+            backToMenuFromDiff.addEventListener('click', goToMainMenu);
+            backToMenuFromHelp.addEventListener('click', goToMainMenu);
+            backToMenuFromSet.addEventListener('click', goToMainMenu);
+            backToMenuFromOnline.addEventListener('click', goToMainMenu);
+
+            // Difficulty Selection
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    initializeGameUI(true, e.target.dataset.difficulty);
+                });
+            });
+
+            // Game Actions
+            guessButton.addEventListener('click', () => {
+                if (gameMode === 'twoPlayerOnline') {
+                    handleOnlineGuess(currentOnlineGameData);
+                } else {
+                    handleGuess();
+                }
+            });
+
+            guessInput.addEventListener('keyup', (e) => { 
+                if (e.key === 'Enter') {
+                    guessButton.click(); // Always trigger the button's current action
+                }
+            });
+            
+            quitButton.addEventListener('click', async () => {
+                if (gameOver) { // If game is over, this button always goes to the menu
+                    goToMainMenu();
+                    return;
+                }
+
+                if (gameMode === 'twoPlayerOnline' && currentOnlineGameId) {
+                    const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
+                    await updateDoc(gameRef, { gameState: 'game_over', winner: null }); // null winner signifies a quit
+                } else {
+                    gameOver = true;
+                    showMessage(`The word was "${secretWord}". Better luck next time!`, 'info');
+                    guessInput.disabled = true;
+                    guessButton.disabled = true;
+                    quitButton.textContent = 'Main Menu';
+                }
+            });
+
+            // Online Lobby Actions
+            createOnlineGameButton.addEventListener('click', createOnlineGame);
+            joinOnlineGameButton.addEventListener('click', joinOnlineGame);
+            copyGameIdButton.addEventListener('click', () => {
+                 copyToClipboard(gameIdText.textContent);
+            });
+        }
+
+        // --- Initial Load ---
+        window.onload = async () => {
+            await initializeFirebase();
+            goToMainMenu();
+            updateThemeIcons();
+            setupEventListeners();
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
