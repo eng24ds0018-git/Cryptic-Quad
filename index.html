@@ -26,7 +26,7 @@
             font-family: 'Inter', sans-serif;
         }
         .font-marker {
-            font-family: 'Permanent Marker', cursive;
+            font-family: 'Permanent 'Marker'', cursive;
         }
         /* Custom styles for input field focus */
         .form-input:focus {
@@ -127,7 +127,7 @@
              <button id="backToMenuFromOnline" class="mt-8 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">Back to Main Menu</button>
         </div>
 
-        <!-- Difficulty Selection Screen (Restored) -->
+        <!-- Difficulty Selection Screen -->
         <div id="difficultySelectionScreen" class="hidden text-center">
              <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-300 mb-6">Select Difficulty</h2>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -144,7 +144,7 @@
             <button id="backToMenuFromDiff" class="mt-8 text-sm text-indigo-600 dark:text-indigo-400 hover:underline">Back to Main Menu</button>
         </div>
 
-        <!-- How to Play Screen (Restored) -->
+        <!-- How to Play Screen -->
         <div id="howToPlayScreen" class="hidden prose dark:prose-invert max-w-none">
             <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-300 mb-6">How to Play</h2>
             <p>Cryptic Quad is a code-breaking game where you have to guess a secret 4-letter word.</p>
@@ -171,7 +171,7 @@
             </div>
         </div>
 
-        <!-- Set Word Screen (for 2-player local and online mode) -->
+        <!-- Set Word Screen -->
         <div id="setWordScreen" class="hidden text-center">
             <h2 id="setWordTitle" class="text-2xl font-bold text-gray-700 dark:text-gray-300 mb-2">Set the Secret Word</h2>
             <p id="setWordSubtitle" class="text-gray-500 dark:text-gray-400 mb-4">Enter a 4-letter word for the other player to guess.</p>
@@ -189,6 +189,11 @@
         
         <!-- Main Game Screen -->
         <div id="gameScreen" class="hidden">
+             <!-- Online Score Display -->
+            <div id="onlineScoreDisplay" class="hidden text-center mb-4">
+                <p class="font-bold text-lg text-gray-700 dark:text-gray-300">Score: <span id="player1Score"></span> - <span id="player2Score"></span></p>
+                <p class="text-sm text-gray-500 dark:text-gray-400"><span id="player1Name"></span> vs <span id="player2Name"></span></p>
+            </div>
             <div class="flex flex-col md:flex-row md:gap-8">
                 <!-- Left Panel: Game Controls -->
                 <div class="w-full md:w-2/3">
@@ -201,14 +206,23 @@
                         </button>
                     </div>
                     
-                    <div class="flex justify-center gap-4 mb-6">
+                    <div id="gameControls" class="flex justify-center gap-4 mb-6">
                         <button id="quitButton"
                                 class="bg-red-500 text-white font-bold py-2 px-5 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-4 focus:ring-red-300 transition-colors duration-300 shadow-md">
-                            Quit & Reveal
+                            Quit
                         </button>
                     </div>
 
                     <div id="messageArea" class="text-center min-h-[2.5rem] mt-8 mb-4 font-medium text-lg flex items-center justify-center p-2 rounded-lg"></div>
+
+                    <!-- NEW: Rematch Request Area -->
+                    <div id="rematchRequestArea" class="hidden text-center mt-4 p-4 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg">
+                        <p id="rematchMessage" class="font-semibold mb-3"></p>
+                        <div id="rematchButtons" class="flex justify-center gap-4">
+                             <button id="acceptRematchButton" class="bg-green-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-green-700">Accept</button>
+                             <button id="declineRematchButton" class="bg-red-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-red-700">Decline</button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right Panel: Guess History -->
@@ -224,35 +238,46 @@
                 </div>
             </div>
         </div>
+
+        <!-- NEW: Scorecard Screen -->
+        <div id="scorecardScreen" class="hidden text-center">
+            <h2 class="text-3xl font-bold text-gray-700 dark:text-gray-300 mb-4">Match Over!</h2>
+            <div class="bg-gray-100 dark:bg-gray-700/50 p-6 rounded-lg max-w-md mx-auto">
+                <h3 class="text-xl font-semibold mb-4">Final Scorecard</h3>
+                <p class="text-lg">Total Games Played: <span id="totalGames" class="font-bold"></span></p>
+                <div class="mt-4 space-y-2 text-left">
+                    <p class="text-lg"><span id="scorePlayer1Name"></span>'s Wins: <span id="scorePlayer1" class="font-bold"></span></p>
+                    <p class="text-lg"><span id="scorePlayer2Name"></span>'s Wins: <span id="scorePlayer2" class="font-bold"></span></p>
+                </div>
+            </div>
+            <button id="backToMenuFromScorecard" class="mt-8 bg-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-indigo-700">Back to Main Menu</button>
+        </div>
     </div>
     
     <!-- Firebase -->
     <script type="module">
-        // --- Firebase SDK Imports ---
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Word Lists (unchanged) ---
         const beginnerWords = ['acid', 'also', 'back', 'band', 'bank', 'bare', 'base', 'beam', 'bean', 'bear', 'beat', 'belt', 'bend', 'best', 'bike', 'bird', 'blow', 'blue', 'boat', 'body', 'bold', 'bond', 'bone', 'born', 'both', 'bowl', 'burn', 'cake', 'calm', 'came', 'camp', 'card', 'care', 'case', 'cash', 'cast', 'cave', 'city', 'club', 'coal', 'coat', 'code', 'coin', 'cold', 'come', 'cone', 'copy', 'cord', 'core', 'corn', 'cost', 'dark', 'date', 'dawn', 'deal', 'deck', 'desk', 'dirt', 'dish', 'dock', 'done', 'down', 'drag', 'draw', 'drip', 'drop', 'duck', 'dust', 'earn', 'east', 'easy', 'face', 'fact', 'fade', 'fail', 'fair', 'fake', 'farm', 'fast', 'fear', 'file', 'film', 'find', 'fine', 'fire', 'firm', 'fish', 'five', 'flag', 'flat', 'flow', 'fold', 'font', 'ford', 'fork', 'form', 'four', 'from', 'fuel', 'game', 'gate', 'gave', 'gift', 'give', 'glad', 'glow', 'goal', 'goat', 'gold', 'gone', 'grab', 'gray', 'grid', 'grow', 'gulf', 'hair', 'half', 'hand', 'hang', 'hard', 'harm', 'hate', 'have', 'head', 'heal', 'heap', 'hear', 'heat', 'help', 'herd', 'here', 'hide', 'high', 'hike', 'hint', 'hold', 'hole', 'home', 'hope', 'horn', 'hour', 'hunt', 'hurt', 'idea', 'into', 'iron', 'item', 'join', 'joke', 'jump', 'just', 'kept', 'kind', 'king', 'know', 'lack', 'lady', 'lake', 'lamp', 'land', 'lane', 'last', 'late', 'lawn', 'lead', 'leaf', 'leak', 'lean', 'left', 'lend', 'life', 'lift', 'like', 'limb', 'line', 'link', 'lion', 'list', 'live', 'load', 'loan', 'lock', 'lone', 'long', 'lord', 'lose', 'lost', 'love', 'luck', 'made', 'mail', 'main', 'make', 'male', 'many', 'mark', 'mask', 'mate', 'meal', 'mean', 'meat', 'mend', 'mild', 'mile', 'milk', 'mind', 'mine', 'mist', 'mode', 'mold', 'mole', 'more', 'most', 'move', 'much', 'must', 'nail', 'name', 'near', 'neat', 'neck', 'nest', 'news', 'next', 'nice', 'nine', 'north', 'nose', 'note', 'open', 'oral', 'oven', 'over', 'page', 'paid', 'pain', 'pair', 'pale', 'park', 'part', 'past', 'path', 'pave', 'pick', 'pile', 'pine', 'pink', 'pipe', 'plan', 'play', 'plot', 'plug', 'plus', 'poem', 'poet', 'poke', 'pole', 'pond', 'pork', 'port', 'post', 'pure', 'push', 'race', 'rack', 'raft', 'rail', 'rain', 'rake', 'ramp', 'rank', 'rate', 'read', 'real', 'rely', 'rent', 'rest', 'rice', 'rich', 'ride', 'ring', 'rise', 'risk', 'road', 'roam', 'robe', 'rock', 'rode', 'role', 'rope', 'rosy', 'ruin', 'rule', 'rush', 'rust', 'safe', 'said', 'sail', 'sake', 'sale', 'salt', 'same', 'sand', 'sane', 'sang', 'save', 'scab', 'scan', 'scar', 'seal', 'seam', 'seat', 'self', 'send', 'sent', 'ship', 'shot', 'show', 'shut', 'sick', 'side', 'sigh', 'sign', 'silk', 'sing', 'sink', 'site', 'size', 'skin', 'skip', 'slab', 'slam', 'slap', 'sled', 'slid', 'slim', 'slip', 'slot', 'slow', 'snap', 'snow', 'soak', 'soap', 'soft', 'soil', 'sold', 'sole', 'some', 'song', 'sore', 'sort', 'soul', 'soup', 'sour', 'star', 'stay', 'stem', 'step', 'stop', 'such', 'suit', 'sure', 'surf', 'swim', 'tack', 'tail', 'take', 'tale', 'talk', 'tame', 'tank', 'tape', 'task', 'team', 'tear', 'tend', 'tent', 'term', 'text', 'than', 'that', 'them', 'then', 'they', 'thin', 'this', 'tide', 'tidy', 'tile', 'time', 'tiny', 'tire', 'tomb', 'tone', 'took', 'tour', 'town', 'trap', 'tray', 'trim', 'trio', 'trip', 'true', 'tube', 'tune', 'turn', 'twin', 'type', 'unit', 'upon', 'used', 'user', 'vain', 'vast', 'vein', 'vent', 'verb', 'very', 'vest', 'view', 'vote', 'wade', 'wait', 'wake', 'walk', 'wand', 'want', 'ward', 'ware', 'warm', 'warn', 'wash', 'wave', 'weak', 'wear', 'went', 'were', 'west', 'what', 'when', 'wide', 'wife', 'wild', 'wind', 'wine', 'wink', 'wipe', 'wire', 'wise', 'wish', 'with', 'woke', 'wolf', 'word', 'wore', 'work', 'worm', 'worn', 'wrap', 'yard', 'yarn', 'yawn', 'year', 'your'];
         const intermediateWords = ['aged', 'aunt', 'axis', 'barn', 'bath', 'bind', 'bite', 'blur', 'boil', 'bolt', 'bomb', 'bony', 'brag', 'brew', 'brim', 'buck', 'bulk', 'bury', 'bush', 'bust', 'busy', 'byte', 'cane', 'cape', 'chat', 'chef', 'chew', 'chin', 'chip', 'chop', 'cite', 'clam', 'clan', 'clap', 'claw', 'clay', 'clip', 'clue', 'colt', 'conk', 'cork', 'cozy', 'crab', 'cram', 'crew', 'crib', 'crow', 'cube', 'cult', 'curb', 'cure', 'curl', 'curt', 'curv', 'cute', 'damp', 'dare', 'darn', 'dart', 'dash', 'deaf', 'debt', 'deny', 'dent', 'dial', 'dice', 'diet', 'dime', 'dine', 'disc', 'dive', 'does', 'dole', 'dome', 'dont', 'dose', 'dote', 'drab', 'dram', 'drew', 'drug', 'drum', 'dual', 'duct', 'duel', 'duet', 'duke', 'duly', 'dumb', 'dump', 'dune', 'dunk', 'dusk', 'duty', 'echo', 'edge', 'edit', 'else', 'envy', 'epic', 'even', 'evil', 'exam', 'exit', 'fang', 'fate', 'fawn', 'feat', 'feud', 'fink', 'fist', 'flak', 'flan', 'flap', 'flaw', 'flax', 'flea', 'fled', 'flew', 'flex', 'flip', 'flog', 'flub', 'flux', 'foal', 'foam', 'foci', 'foil', 'folk', 'foul', 'fowl', 'frag', 'fray', 'fume', 'fund', 'funk', 'fury', 'fuse', 'gain', 'gaze', 'gear', 'gnaw', 'grad', 'gram', 'grim', 'grin', 'grip', 'grub', 'gunk', 'guru', 'gust', 'guts', 'hack', 'hail', 'halo', 'halt', 'hark', 'harp', 'haul', 'hawk', 'haze', 'hazy', 'heir', 'hemp', 'herb', 'hero', 'hoax', 'homy', 'honk', 'hose', 'host', 'huge', 'hulk', 'hump', 'hung', 'hurl', 'hush', 'husk', 'hymn', 'hype', 'icon', 'idle', 'idol', 'inch', 'info', 'jail', 'jolt', 'junk', 'jury', 'keys', 'kick', 'kilo', 'kite', 'kiwi', 'knob', 'knot', 'lace', 'laid', 'lair', 'lamb', 'lame', 'lank', 'lard', 'lark', 'lava', 'lazy', 'lens', 'lent', 'lobe', 'loft', 'loin', 'lore', 'lout', 'lows', 'lump', 'lung', 'lure', 'lurk', 'lush', 'lust', 'lynx', 'lyre', 'maid', 'malt', 'mane', 'maps', 'mare', 'mars', 'mast', 'maul', 'maze', 'mead', 'meld', 'melt', 'memo', 'meow', 'mercy', 'mesh', 'mice', 'mime', 'mink', 'mint', 'mire', 'mite', 'moan', 'moat', 'mock', 'molt', 'monk', 'moth', 'muck', 'mule', 'murk', 'muse', 'mush', 'mute', 'myth', 'navy', 'nerd', 'node', 'noisy', 'nope', 'numb', 'oath', 'obey', 'onyx', 'opal', 'ouch', 'oust', 'oval', 'pact', 'pail', 'palm', 'pane', 'pant', 'pawn', 'peak', 'pear', 'pelt', 'perk', 'pest', 'pike', 'pint', 'pity', 'plea', 'plod', 'plop', 'plow', 'plum', 'pram', 'prey', 'prod', 'prom', 'prop', 'prow', 'puck', 'puke', 'pulp', 'puma', 'pump', 'punk', 'punt', 'puny', 'putz', 'quip', 'raft', 'rage', 'raid', 'rand', 'rant', 'rapt', 'rare', 'rash', 'rave', 'raze', 'ream', 'reap', 'redo', 'rife', 'rift', 'rime', 'rink', 'roan', 'roar', 'romp', 'rote', 'rout', 'rove', 'rube', 'ruby', 'rude', 'rump', 'rune', 'rung', 'runt', 'ruse', 'rusk', 'sack', 'scam', 'scat', 'scow', 'scum', 'sect', 'serf', 'shag', 'sham', 'shed', 'shim', 'shod', 'shun', 'silo', 'skew', 'skid', 'skim', 'slag', 'slat', 'slay', 'slew', 'slit', 'slob', 'slog', 'slug', 'slum', 'slur', 'smog', 'smug', 'snag', 'snip', 'snit', 'snob', 'snot', 'snub', 'snug', 'sock', 'soda', 'sofa', 'solo', 'spam', 'span', 'spar', 'spat', 'spay', 'spec', 'spin', 'spit', 'spot', 'spud', 'spur', 'stab', 'stag', 'stew', 'stir', 'stow', 'stub', 'stud', 'stun', 'sued', 'suet', 'sumo', 'sung', 'sunk', 'swab', 'swag', 'swam', 'swan', 'swap', 'swat', 'sway', 'swig', 'swum', 'taco', 'tact', 'tamp', 'taps', 'tare', 'tarp', 'taxi', 'tech', 'thaw', 'thud', 'thug', 'thus', 'tick', 'tier', 'tine', 'ting', 'tint', 'toad', 'tong', 'tony', 'torn', 'tout', 'toys', 'tram', 'trod', 'trot', 'tuck', 'tuna', 'turf', 'tusk', 'twig', 'twit', 'typo', 'ugly', 'unto', 'vamp', 'vane', 'vary', 'veal', 'vend', 'veto', 'vial', 'vibe', 'vice', 'vine', 'visa', 'void', 'volt', 'waif', 'warp', 'wart', 'wary', 'wasp', 'wavy', 'webs', 'weld', 'welt', 'wept', 'whet', 'whey', 'whim', 'whip', 'whit', 'whom', 'wick', 'wile', 'wilt', 'wimp', 'wino', 'wisp', 'wove', 'wren', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'yule', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk'];
         const proWords = ['quiz', 'jury', 'jump', 'joke', 'jolt', 'junk', 'kiwi', 'knob', 'lynx', 'myth', 'onyx', 'pulp', 'pump', 'quad', 'quip', 'quit', 'quiz', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk', 'flux', 'jinx', 'hymn', 'hype', 'trek', 'whiz', 'foxy', 'jock', 'jowl', 'judo', 'kemp', 'kept', 'perk', 'phew', 'pyx'];
         
-        // --- DOM Elements (Restored & organized) ---
+        // --- DOM Elements ---
         const allScreens = document.querySelectorAll('.w-full.max-w-4xl > div:not(header):not(#mainMessageArea)');
         const subheading = document.getElementById('subheading');
-        // Theme
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeIconLight = document.getElementById('theme-icon-light');
         const themeIconDark = document.getElementById('theme-icon-dark');
-        // Screens
         const modeSelectionScreen = document.getElementById('modeSelectionScreen');
         const difficultySelectionScreen = document.getElementById('difficultySelectionScreen');
         const howToPlayScreen = document.getElementById('howToPlayScreen');
         const setWordScreen = document.getElementById('setWordScreen');
         const gameScreen = document.getElementById('gameScreen');
         const onlineLobbyScreen = document.getElementById('onlineLobbyScreen');
-        // Buttons
+        const scorecardScreen = document.getElementById('scorecardScreen');
         const singlePlayerButton = document.getElementById('singlePlayerButton');
         const twoPlayerButton = document.getElementById('twoPlayerButton');
         const onlinePlayerButton = document.getElementById('onlinePlayerButton');
@@ -263,12 +288,10 @@
         const startGameButton = document.getElementById('startGameButton');
         const guessButton = document.getElementById('guessButton');
         const quitButton = document.getElementById('quitButton');
-        // Online Buttons
         const createOnlineGameButton = document.getElementById('createOnlineGameButton');
         const joinOnlineGameButton = document.getElementById('joinOnlineGameButton');
         const copyGameIdButton = document.getElementById('copyGameIdButton');
         const backToMenuFromOnline = document.getElementById('backToMenuFromOnline');
-        // Inputs & Display
         const secretWordInput = document.getElementById('secretWordInput');
         const guessInput = document.getElementById('guessInput');
         const messageArea = document.getElementById('messageArea');
@@ -276,20 +299,28 @@
         const guessHistory = document.getElementById('guessHistory');
         const setWordTitle = document.getElementById('setWordTitle');
         const setWordSubtitle = document.getElementById('setWordSubtitle');
-        // Online Display
         const gameIdDisplay = document.getElementById('gameIdDisplay');
         const gameIdText = document.getElementById('gameIdText');
         const joinGameIdInput = document.getElementById('joinGameIdInput');
+        const gameControls = document.getElementById('gameControls');
+        // Rematch UI
+        const rematchRequestArea = document.getElementById('rematchRequestArea');
+        const rematchMessage = document.getElementById('rematchMessage');
+        const rematchButtons = document.getElementById('rematchButtons');
+        const acceptRematchButton = document.getElementById('acceptRematchButton');
+        const declineRematchButton = document.getElementById('declineRematchButton');
+        // Scorecard UI
+        const backToMenuFromScorecard = document.getElementById('backToMenuFromScorecard');
         
         // --- Game State & Firebase ---
         let db, auth, userId;
         let secretWord = '';
         let gameOver = false;
-        let gameMode = null; // 'single', 'twoPlayerLocal', 'twoPlayerOnline'
+        let gameMode = null; 
         let attemptCount = 0;
         let onlineGameUnsubscribe = null;
-        let currentOnlineGameId = null; // Robustly track the current game ID
-        let currentOnlineGameData = null; // Store the latest game data
+        let currentOnlineGameId = null;
+        let currentOnlineGameData = null; 
         
         // --- Firebase Config & Init ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
@@ -298,20 +329,8 @@
             try {
                 let firebaseConfig;
                 if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
-                    // Use the config provided by the development environment
                     firebaseConfig = JSON.parse(__firebase_config);
                 } else {
-                    // **** IMPORTANT DEPLOYMENT INSTRUCTIONS ****
-                    // To deploy this game with online features, you must create your own Firebase project.
-                    // 1. Go to https://firebase.google.com/ and create a project.
-                    // 2. In Project Settings, create a new Web App (</>).
-                    // 3. Firebase will give you a `firebaseConfig` object. Copy its contents.
-                    // 4. Paste the values into the object below, replacing the placeholder text.
-                    // 5. In the Firebase console, go to "Build" > "Firestore Database". Create a database.
-                    //    Start in "test mode" for easy setup.
-                    // 6. Go to "Build" > "Authentication". On the "Sign-in method" tab, enable "Anonymous" sign-in.
-                    //
-                    // If you don't do this, online mode will be disabled on your website.
                     const deployedFirebaseConfig = {
   apiKey: "AIzaSyDEChwcDmmrXw_UZgWaDAU8iShFSbBv-l8",
   authDomain: "cryptic-quad.firebaseapp.com",
@@ -320,10 +339,8 @@
   messagingSenderId: "301044450306",
   appId: "1:301044450306:web:6fdf7e794677969734531b"
 };
-                    
-
                     if (deployedFirebaseConfig.apiKey.startsWith("PASTE_")) {
-                         throw new Error("Firebase configuration is missing for deployment. Please read the comments in the HTML file.");
+                         throw new Error("Firebase configuration is missing for deployment.");
                     }
                     firebaseConfig = deployedFirebaseConfig;
                 }
@@ -332,7 +349,6 @@
                 db = getFirestore(app);
                 auth = getAuth(app);
 
-                // Sign in logic: use token if available (dev env), otherwise sign in anonymously (deployed site)
                 const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
@@ -340,7 +356,6 @@
                     await signInAnonymously(auth);
                 }
                 userId = auth.currentUser.uid;
-
                 console.log("Firebase initialized and user signed in:", userId);
             } catch (error) {
                 console.error("Firebase initialization failed:", error);
@@ -350,7 +365,7 @@
             }
         }
 
-        // --- Core UI & Helper Functions (Restored) ---
+        // --- UI & Helper Functions ---
         function showScreen(screenToShow) {
             allScreens.forEach(screen => screen.classList.add('hidden'));
             screenToShow.classList.remove('hidden');
@@ -386,7 +401,6 @@
         function validateWord(word) {
             if (word.length !== 4) return "Word must be 4 letters long.";
             if (!/^[a-z]+$/.test(word)) return "Word must contain only letters.";
-            // Simplified and corrected: This rule applies to all game modes now.
             if (hasConsecutiveDuplicates(word)) {
                 return "Word cannot have consecutive identical letters (e.g., 'tree').";
             }
@@ -398,94 +412,45 @@
             attemptCount = 0;
             guessHistory.innerHTML = '';
             messageArea.classList.add('hidden');
+            rematchRequestArea.classList.add('hidden');
+            gameControls.classList.remove('hidden');
             guessInput.value = '';
             guessInput.disabled = false;
             guessButton.disabled = false;
-            quitButton.textContent = 'Quit & Reveal';
+            if (gameMode !== 'twoPlayerOnline') quitButton.textContent = 'Quit & Reveal';
+            else quitButton.textContent = 'Quit Match';
+            
             if (resetSecret) {
                 secretWord = getSecretWord(difficulty);
-                console.log(`Secret word (${difficulty}):`, secretWord); // For debugging
             }
             showScreen(gameScreen);
             guessInput.focus();
         }
 
-        // --- Local Game Logic (Restored) ---
-        function handleGuess() {
-            if (gameOver) return;
-            const guess = guessInput.value.toLowerCase();
-            const validationError = validateWord(guess);
-            if (validationError) {
-                showMessage(validationError, 'error');
-                return;
-            }
-            attemptCount++;
-            let cows = 0; let bulls = 0;
-            const secretLetters = secretWord.split('');
-            const guessLetters = guess.split('');
-
-            for (let i = 0; i < 4; i++) { if (guessLetters[i] === secretLetters[i]) { cows++; secretLetters[i] = null; guessLetters[i] = null; } }
-            for(let i = 0; i < 4; i++){ if(guessLetters[i] === null) continue; const bullIndex = secretLetters.indexOf(guessLetters[i]); if(bullIndex !== -1) { bulls++; secretLetters[bullIndex] = null; } }
-            
-            updateHistory([{ guess, cows, bulls }]); // Re-using online history updater
-            
-            if (cows === 4) {
-                gameOver = true;
-                showMessage(`You guessed it in ${attemptCount} attempts! The word was "${secretWord}".`, 'success');
-                guessInput.disabled = true;
-                guessButton.disabled = true;
-                quitButton.textContent = 'Main Menu';
-            } else {
-                messageArea.classList.add('hidden');
-            }
-            guessInput.value = '';
-            guessInput.focus();
-        }
-
-        // --- NEW: Robust Clipboard Function ---
         function copyToClipboard(text) {
-            if (navigator.clipboard && window.isSecureContext) {
-                navigator.clipboard.writeText(text).then(() => {
-                    showMainMessage('Game ID copied!', 'success');
-                }).catch(err => {
-                    console.error('Async copy failed:', err);
-                    copyFallback(text); // Try fallback if modern method fails
-                });
-            } else {
-                copyFallback(text); // Fallback for older browsers or insecure contexts
-            }
-        }
-
-        function copyFallback(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            textArea.style.position = 'fixed';
-            textArea.style.top = '-9999px';
-            textArea.style.left = '-9999px';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    showMainMessage('Game ID copied!', 'success');
-                } else {
-                    showMainMessage('Copy failed. Please copy manually.', 'error');
-                }
-            } catch (err) {
-                console.error('Fallback copy failed:', err);
+            navigator.clipboard.writeText(text).then(() => {
+                showMainMessage('Game ID copied!', 'success');
+            }).catch(err => {
                 showMainMessage('Copy failed. Please copy manually.', 'error');
-            }
-            document.body.removeChild(textArea);
+            });
         }
 
-        // --- Online Multiplayer Logic (Fixed & Refactored) ---
+        // --- Online Multiplayer Logic ---
         async function createOnlineGame() {
-            if (!userId) { showMainMessage("You must be logged in to create a game.", "error"); return; }
+            if (!userId) { showMainMessage("You must be logged in.", "error"); return; }
             currentOnlineGameId = Math.random().toString(36).substring(2, 8).toUpperCase();
             const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
             try {
-                await setDoc(gameRef, { player1: userId, player2: null, secretWord: null, guesses: [], gameState: 'waiting_for_player', winner: null, createdAt: serverTimestamp() });
+                // NEW: Initialize with score fields
+                await setDoc(gameRef, { 
+                    player1: userId, player2: null, 
+                    player1_original: userId, player2_original: null, // To track original players for scorecard
+                    secretWord: null, guesses: [], 
+                    gameState: 'waiting_for_player', winner: null, 
+                    createdAt: serverTimestamp(),
+                    player1_score: 0, player2_score: 0, total_games_played: 0,
+                    rematch_requester: null
+                });
                 gameIdText.textContent = currentOnlineGameId;
                 gameIdDisplay.classList.remove('hidden');
                 joinGameIdInput.disabled = true;
@@ -496,48 +461,22 @@
         }
 
         async function joinOnlineGame() {
-            if (!userId) {
-                showMainMessage("You must be logged in to join a game.", "error");
-                return;
-            }
+            if (!userId) { showMainMessage("You must be logged in.", "error"); return; }
             const gameId = joinGameIdInput.value.trim().toUpperCase();
-            if (!gameId) {
-                showMainMessage("Please enter a Game ID.", "error");
-                return;
-            }
+            if (!gameId) { showMainMessage("Please enter a Game ID.", "error"); return; }
         
             const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, gameId);
-        
             try {
                 const gameDoc = await getDoc(gameRef);
-        
-                if (!gameDoc.exists()) {
-                    showMainMessage("No game found with that ID. Please check for typos.", "error");
-                    return;
-                }
-        
+                if (!gameDoc.exists()) { showMainMessage("No game found with that ID.", "error"); return; }
                 const gameData = gameDoc.data();
-
-                if (gameData.player1 === userId) {
-                    showMainMessage("You cannot join your own game.", "error");
-                    return;
-                }
+                if (gameData.player1 === userId) { showMainMessage("You cannot join your own game.", "error"); return; }
+                if (gameData.player2 !== null) { showMainMessage("This game is already full.", "error"); return; }
+                if (gameData.gameState !== 'waiting_for_player') { showMainMessage("This game is not available to join right now.", "error"); return; }
         
-                if (gameData.player2 !== null) {
-                    showMainMessage("This game is already full.", "error");
-                    return;
-                }
-        
-                if (gameData.gameState !== 'waiting_for_player') {
-                    showMainMessage("This game is not available to join right now.", "error");
-                    return;
-                }
-        
-                // All checks passed, proceed to join
                 currentOnlineGameId = gameId;
-                await updateDoc(gameRef, { player2: userId, gameState: 'waiting_for_word' });
+                await updateDoc(gameRef, { player2: userId, player2_original: userId, gameState: 'waiting_for_word' });
                 listenToGameUpdates(currentOnlineGameId);
-        
             } catch (error) {
                 console.error("Error joining game:", error);
                 showMainMessage("An error occurred while trying to join the game.", "error");
@@ -547,23 +486,42 @@
         function listenToGameUpdates(gameId) {
             const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, gameId);
             onlineGameUnsubscribe = onSnapshot(gameRef, (doc) => { 
+                if (!doc.exists()) {
+                    goToMainMenu();
+                    showMainMessage("The game session has ended.", "info");
+                    return;
+                }
                 currentOnlineGameData = doc.data();
                 handleGameStateChange(currentOnlineGameData); 
             });
         }
         
         function handleGameStateChange(gameData) {
-            if (!gameData) { goToMainMenu(); showMainMessage("The game session has ended.", "info"); return; }
+            if (!gameData) return;
+
             const isPlayer1 = gameData.player1 === userId;
             const isPlayer2 = gameData.player2 === userId;
+
+            // Update online score display if visible
+            const onlineScoreDisplay = document.getElementById('onlineScoreDisplay');
+            if (gameData.player2) { // Only show score if player 2 has joined
+                document.getElementById('player1Score').textContent = gameData.player1_score;
+                document.getElementById('player2Score').textContent = gameData.player2_score;
+                document.getElementById('player1Name').textContent = gameData.player1 === gameData.player1_original ? 'You' : 'Opponent';
+                document.getElementById('player2Name').textContent = gameData.player2 === gameData.player2_original ? 'Opponent' : 'You';
+                onlineScoreDisplay.classList.remove('hidden');
+            } else {
+                onlineScoreDisplay.classList.add('hidden');
+            }
+
             switch (gameData.gameState) {
                 case 'waiting_for_player':
                     subheading.textContent = `Game ID: ${currentOnlineGameId}. Waiting for friend...`;
                     break;
                 case 'waiting_for_word':
                     if (isPlayer1) {
-                        setWordTitle.textContent = "Player 1: Set the Secret Word";
-                        setWordSubtitle.textContent = "Enter the word for Player 2 to guess.";
+                        setWordTitle.textContent = "Your turn to set the word";
+                        setWordSubtitle.textContent = "Enter the word for your opponent to guess.";
                         startGameButton.onclick = () => setOnlineSecretWord();
                         showScreen(setWordScreen);
                     } else if (isPlayer2) {
@@ -575,7 +533,7 @@
                     break;
                 case 'player2_turn':
                     secretWord = gameData.secretWord;
-                    subheading.textContent = isPlayer2 ? "Your turn to guess!" : "Waiting for Player 2's guess...";
+                    subheading.textContent = isPlayer2 ? "Your turn to guess!" : "Waiting for your opponent's guess...";
                     initializeGameUI(false);
                     guessInput.disabled = !isPlayer2;
                     guessButton.disabled = !isPlayer2;
@@ -583,21 +541,66 @@
                     updateHistory(gameData.guesses, true);
                     break;
                 case 'game_over':
-                    gameOver = true; // Set the global game over flag
+                    gameOver = true;
                     secretWord = gameData.secretWord;
                     initializeGameUI(false);
                     updateHistory(gameData.guesses, true);
                     guessInput.disabled = true;
                     guessButton.disabled = true;
+                    gameControls.classList.add('hidden');
                     const winnerIsYou = gameData.winner === userId;
-                    if (gameData.winner) {
-                         showMessage(winnerIsYou ? `You won in ${gameData.guesses.length} attempts! The word was "${secretWord}".` : `The other player won! The word was "${secretWord}".`, 'success');
-                    } else { 
-                        showMessage(`The other player has left the game. The word was "${secretWord}".`, 'info'); 
-                    }
-                    quitButton.textContent = 'Main Menu';
+                    showMessage(winnerIsYou ? `You won! The word was "${secretWord}".` : `You lost! The word was "${secretWord}".`, 'success');
+                    
+                    // Show "Play Again" button
+                    rematchRequestArea.classList.remove('hidden');
+                    rematchButtons.classList.add('hidden'); // Hide accept/decline for now
+                    rematchMessage.innerHTML = `<button id="playAgainButton" class="bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700">Play Again</button>`;
+                    document.getElementById('playAgainButton').onclick = requestRematch;
+                    break;
+                case 'rematch_requested':
+                    handleRematchRequest(gameData);
+                    break;
+                case 'score_summary':
+                    showScorecard(gameData);
                     break;
             }
+        }
+
+        function handleRematchRequest(gameData) {
+            rematchRequestArea.classList.remove('hidden');
+            const requesterIsYou = gameData.rematch_requester === userId;
+            if(requesterIsYou) {
+                rematchMessage.textContent = 'Rematch request sent. Waiting for response...';
+                rematchButtons.classList.add('hidden');
+            } else {
+                rematchMessage.textContent = 'Opponent wants to play again!';
+                rematchButtons.classList.remove('hidden');
+            }
+        }
+
+        async function requestRematch() {
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
+            await updateDoc(gameRef, { gameState: 'rematch_requested', rematch_requester: userId });
+        }
+
+        async function acceptRematch() {
+            const gameData = currentOnlineGameData;
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
+            await updateDoc(gameRef, {
+                // Swap players for the next round
+                player1: gameData.player2,
+                player2: gameData.player1,
+                secretWord: null,
+                guesses: [],
+                winner: null,
+                rematch_requester: null,
+                gameState: 'waiting_for_word'
+            });
+        }
+
+        async function declineRematch() {
+            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
+            await updateDoc(gameRef, { gameState: 'score_summary' });
         }
         
         async function setOnlineSecretWord() {
@@ -622,9 +625,29 @@
             const newGuess = { guess, cows, bulls };
             const updatedGuesses = [...gameData.guesses, newGuess];
             const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-            if (cows === 4) { await updateDoc(gameRef, { guesses: updatedGuesses, gameState: 'game_over', winner: userId }); } 
+            
+            if (cows === 4) {
+                const isPlayer1Original = gameData.player1_original === userId;
+                const scoreFieldToUpdate = isPlayer1Original ? 'player1_score' : 'player2_score';
+                await updateDoc(gameRef, { 
+                    guesses: updatedGuesses, 
+                    gameState: 'game_over', 
+                    winner: userId,
+                    total_games_played: increment(1),
+                    [scoreFieldToUpdate]: increment(1)
+                });
+            } 
             else { await updateDoc(gameRef, { guesses: updatedGuesses }); }
             guessInput.value = ''; guessInput.focus();
+        }
+
+        function showScorecard(gameData) {
+            document.getElementById('totalGames').textContent = gameData.total_games_played;
+            document.getElementById('scorePlayer1Name').textContent = "Player 1";
+            document.getElementById('scorePlayer2Name').textContent = "Player 2";
+            document.getElementById('scorePlayer1').textContent = gameData.player1_score;
+            document.getElementById('scorePlayer2').textContent = gameData.player2_score;
+            showScreen(scorecardScreen);
         }
 
         function updateHistory(guesses, clearFirst = false) {
@@ -635,7 +658,7 @@
                 historyItem.innerHTML = `<div class="font-mono text-lg tracking-widest">${guess.toUpperCase()}</div><div class="font-bold text-lg">${cows}</div><div class="font-bold text-lg">${bulls}</div>`;
                 guessHistory.appendChild(historyItem);
             });
-            guessHistory.scrollTop = guessHistory.scrollHeight;
+            if(guessHistory.lastChild) guessHistory.lastChild.scrollIntoView({ behavior: 'smooth' });
         }
         
         function updateThemeIcons() {
@@ -673,11 +696,9 @@
             twoPlayerButton.addEventListener('click', () => {
                 gameMode = 'twoPlayerLocal';
                 setWordTitle.textContent = "Player 1: Set the Secret Word";
-                setWordSubtitle.textContent = "Enter a word for Player 2 to guess. Don't let them see!";
                 startGameButton.onclick = () => {
                     secretWord = secretWordInput.value.toLowerCase();
                     const validationError = validateWord(secretWord);
-                    // FIXED: Show message in the correct area on the setWordScreen
                     if (validationError) { 
                         showMessage(validationError, 'error', document.getElementById('setWordMessageArea')); 
                         return; 
@@ -694,53 +715,45 @@
             backToMenuFromHelp.addEventListener('click', goToMainMenu);
             backToMenuFromSet.addEventListener('click', goToMainMenu);
             backToMenuFromOnline.addEventListener('click', goToMainMenu);
+            backToMenuFromScorecard.addEventListener('click', goToMainMenu);
 
-            // Difficulty Selection
             document.querySelectorAll('.difficulty-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     initializeGameUI(true, e.target.dataset.difficulty);
                 });
             });
 
-            // Game Actions
             guessButton.addEventListener('click', () => {
-                if (gameMode === 'twoPlayerOnline') {
-                    handleOnlineGuess(currentOnlineGameData);
-                } else {
-                    handleGuess();
-                }
+                if (gameMode !== 'twoPlayerOnline') handleGuess();
             });
 
             guessInput.addEventListener('keyup', (e) => { 
-                if (e.key === 'Enter') {
-                    guessButton.click(); // Always trigger the button's current action
-                }
+                if (e.key === 'Enter') guessButton.click(); 
             });
             
             quitButton.addEventListener('click', async () => {
-                if (gameOver) { // If game is over, this button always goes to the menu
-                    goToMainMenu();
-                    return;
-                }
-
                 if (gameMode === 'twoPlayerOnline' && currentOnlineGameId) {
                     const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-                    await updateDoc(gameRef, { gameState: 'game_over', winner: null }); // null winner signifies a quit
+                    await updateDoc(gameRef, { gameState: 'score_summary' });
                 } else {
                     gameOver = true;
                     showMessage(`The word was "${secretWord}". Better luck next time!`, 'info');
                     guessInput.disabled = true;
                     guessButton.disabled = true;
-                    quitButton.textContent = 'Main Menu';
+                    gameControls.classList.add('hidden');
+                    rematchMessage.innerHTML = `<button id="mainMenuBtn" class="bg-indigo-600 text-white font-bold py-2 px-5 rounded-lg">Main Menu</button>`;
+                    rematchRequestArea.classList.remove('hidden');
+                    document.getElementById('mainMenuBtn').onclick = goToMainMenu;
                 }
             });
 
-            // Online Lobby Actions
             createOnlineGameButton.addEventListener('click', createOnlineGame);
             joinOnlineGameButton.addEventListener('click', joinOnlineGame);
             copyGameIdButton.addEventListener('click', () => {
                  copyToClipboard(gameIdText.textContent);
             });
+            acceptRematchButton.addEventListener('click', acceptRematch);
+            declineRematchButton.addEventListener('click', declineRematch);
         }
 
         // --- Initial Load ---
