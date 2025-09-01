@@ -450,6 +450,7 @@
   messagingSenderId: "301044450306",
   appId: "1:301044450306:web:6fdf7e794677969734531b"
 };
+
                     if (deployedFirebaseConfig.apiKey.startsWith("PASTE_")) {
                          throw new Error("Firebase configuration is missing for deployment.");
                     }
@@ -726,7 +727,7 @@
                 scoreDisplay.classList.add('hidden');
             }
 
-            if (gameData.score_to_beat > 0 && isPlayer2Current) {
+            if (gameData.score_to_beat > 0) {
                 scoreToBeatDisplay.textContent = `Score to Beat: ${gameData.score_to_beat} attempts`;
                 scoreToBeatDisplay.classList.remove('hidden');
             } else {
