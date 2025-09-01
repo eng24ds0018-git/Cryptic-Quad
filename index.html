@@ -442,7 +442,7 @@
                 if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
                     firebaseConfig = JSON.parse(__firebase_config);
                 } else {
-                    const deployedFirebaseConfig = {
+                     const deployedFirebaseConfig = {
   apiKey: "AIzaSyDEChwcDmmrXw_UZgWaDAU8iShFSbBv-l8",
   authDomain: "cryptic-quad.firebaseapp.com",
   projectId: "cryptic-quad",
@@ -450,7 +450,6 @@
   messagingSenderId: "301044450306",
   appId: "1:301044450306:web:6fdf7e794677969734531b"
 };
-
                     if (deployedFirebaseConfig.apiKey.startsWith("PASTE_")) {
                          throw new Error("Firebase configuration is missing for deployment.");
                     }
