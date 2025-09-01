@@ -712,8 +712,7 @@
                 p2NameSpan.textContent = !isUserOriginalPlayer1 ? gameData.p1_name : gameData.p2_name;
                 document.getElementById('player1Score').textContent = isUserOriginalPlayer1 ? gameData.player1_score : gameData.player2_score;
                 document.getElementById('player2Score').textContent = !isUserOriginalPlayer1 ? gameData.player1_score : gameData.player2_score;
-                scoreDisplay.classList.remove('hidden');
-
+                
                 const canEditP1 = isUserOriginalPlayer1;
                 const canEditP2 = !isUserOriginalPlayer1;
 
@@ -742,6 +741,7 @@
                     break;
                 case 'waiting_for_word':
                     backToMenuFromSet.classList.add('hidden');
+                    scoreDisplay.classList.remove('hidden');
                     if (isPlayer1Current) {
                         setWordTitle.textContent = "Your turn to set the word";
                         setWordSubtitle.textContent = "Enter the word for your opponent to guess.";
@@ -784,7 +784,7 @@
                      if (gameData.total_games_played === 0 && gameData.score_to_beat > 0) {
                         const guesserName = (gameData.winner === gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
                         const setterName = (gameData.winner !== gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
-                        if (winnerIsYou) { 
+                        if (userId === gameData.winner) { 
                            endMessage = `You guessed it in ${gameData.score_to_beat} attempts! Waiting for ${setterName} to play.`;
                         } else {
                            endMessage = `${guesserName} guessed it in ${gameData.score_to_beat} attempts! You must now beat this score.`;
@@ -799,7 +799,7 @@
                     
                     rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
                         <button id="playAgainButton" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg">Play Again</button>
-                        <button id="quitMatchButton" class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg">Quit Match</button>
+                        <button id="quitMatchButton" class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg">End Match</button>
                     </div>`;
                     rematchRequestArea.classList.remove('hidden');
                     document.getElementById('playAgainButton').onclick = requestRematch;
