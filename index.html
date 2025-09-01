@@ -450,6 +450,7 @@
   messagingSenderId: "301044450306",
   appId: "1:301044450306:web:6fdf7e794677969734531b"
 };
+
                     if (deployedFirebaseConfig.apiKey.startsWith("PASTE_")) {
                          throw new Error("Firebase configuration is missing for deployment.");
                     }
@@ -596,7 +597,7 @@
 
         function startLocalGame() {
             secretWord = secretWordInput.value.toLowerCase();
-            const validationError = validateWord(word);
+            const validationError = validateWord(secretWord);
             if (validationError) { 
                 showMessage(validationError, 'error', document.getElementById('setWordMessageArea')); 
                 return; 
@@ -712,6 +713,18 @@
                 document.getElementById('player1Score').textContent = isUserOriginalPlayer1 ? gameData.player1_score : gameData.player2_score;
                 document.getElementById('player2Score').textContent = !isUserOriginalPlayer1 ? gameData.player1_score : gameData.player2_score;
                 scoreDisplay.classList.remove('hidden');
+
+                const canEditP1 = isUserOriginalPlayer1;
+                const canEditP2 = !isUserOriginalPlayer1;
+
+                editP1NameBtn.disabled = !canEditP1;
+                editP1NameBtn.classList.toggle('opacity-25', !canEditP1);
+                editP1NameBtn.classList.toggle('cursor-not-allowed', !canEditP1);
+
+                editP2NameBtn.disabled = !canEditP2;
+                editP2NameBtn.classList.toggle('opacity-25', !canEditP2);
+                editP2NameBtn.classList.toggle('cursor-not-allowed', !canEditP2);
+
             } else {
                 scoreDisplay.classList.add('hidden');
             }
@@ -768,7 +781,15 @@
                     gameControls.classList.add('hidden');
 
                     let endMessage;
-                    if (gameData.winner === 'tie') {
+                     if (gameData.total_games_played === 0 && gameData.score_to_beat > 0) {
+                        const guesserName = (gameData.winner === gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
+                        const setterName = (gameData.winner !== gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
+                        if (winnerIsYou) { 
+                           endMessage = `You guessed it in ${gameData.score_to_beat} attempts! Waiting for ${setterName} to play.`;
+                        } else {
+                           endMessage = `${guesserName} guessed it in ${gameData.score_to_beat} attempts! You must now beat this score.`;
+                        }
+                    } else if (gameData.winner === 'tie') {
                         endMessage = `It's a tie! Both players get a point. The word was "${secretWord}".`;
                     } else {
                         const winnerName = (gameData.winner === gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
@@ -1031,11 +1052,21 @@
                     if (cows === 4) { // Guessed the word
                         if (roundLost) { 
                             showMessage(`You found the word! It was "${secretWord}".`, 'info');
-                        } else {
-                           gameOver = true;
-                           guessControls.classList.add('hidden');
-                           gameControls.classList.add('hidden');
-                        }
+                            rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
+                                <button id="playAgainLocal" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button>
+                                <button id="endMatchLocal" class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg">End Match</button>
+                            </div>`;
+                            rematchRequestArea.classList.remove('hidden');
+                            document.getElementById('playAgainLocal').onclick = startLocalRematch;
+                            document.getElementById('endMatchLocal').onclick = () => endMatch(false);
+                             guessControls.classList.add('hidden');
+                             gameControls.classList.add('hidden');
+                            return;
+                        }; 
+
+                        gameOver = true;
+                        guessControls.classList.add('hidden');
+                        gameControls.classList.add('hidden');
                         
                         if (gameMode === 'single') {
                             showMessage(`You guessed it in ${attemptCount} attempts! The word was "${secretWord}".`, 'success');
@@ -1053,26 +1084,25 @@
                                 rematchRequestArea.classList.remove('hidden');
                                 document.getElementById('nextRoundLocal').onclick = startLocalRematch;
                             } else { // Second round of a match, point is decided
-                                if (!roundLost) {
-                                    localGamesPlayed++;
-                                    let messageText;
-                                    if (attemptCount < scoreToBeat) {
-                                        const winnerName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
-                                        (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
-                                        messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
-                                    } else if (attemptCount === scoreToBeat) {
-                                        player1LocalScore++;
-                                        player2LocalScore++;
-                                        messageText = `It's a tie! Both players get a point. The word was "${secretWord}".`;
-                                    } else { 
-                                        const winnerName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
-                                        (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
-                                        messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
-                                    }
-                                    updateLocalScoreDisplay(); 
-                                    showMessage(messageText, 'success');
+                                localGamesPlayed++;
+                                let messageText;
+
+                                if (attemptCount < scoreToBeat) {
+                                    const winnerName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
+                                    (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
+                                    messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
+                                } else if (attemptCount === scoreToBeat) {
+                                    player1LocalScore++;
+                                    player2LocalScore++;
+                                    messageText = `It's a tie! Both players get a point. The word was "${secretWord}".`;
+                                } else { 
+                                    const winnerName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
+                                    (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
+                                    messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
                                 }
                                 
+                                updateLocalScoreDisplay(); 
+                                showMessage(messageText, 'success');
                                 scoreToBeat = 0; 
                                 
                                 rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
@@ -1097,14 +1127,13 @@
             
             quitButton.addEventListener('click', async () => {
                 if (gameMode === 'twoPlayerOnline') {
-                    if (!currentOnlineGameData) return;
+                    if(!currentOnlineGameData) return;
                     const setterId = currentOnlineGameData.player1; // The current setter
                     const payload = {
                         winner: setterId,
                         gameState: 'game_over'
                     };
 
-                    // Only award points and finalize match round if it's the first round or second round is in progress
                     if (currentOnlineGameData.score_to_beat > 0 || currentOnlineGameData.total_games_played === 0) {
                         const isSetterP1Original = setterId === currentOnlineGameData.player1_original;
                         const scoreField = isSetterP1Original ? 'player1_score' : 'player2_score';
@@ -1124,7 +1153,6 @@
                     const setterName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
                     showMessage(`The word was "${secretWord}". ${setterName} wins the point!`, 'info');
 
-                    // Award point to the setter if it's a valid scoring round
                     if(scoreToBeat > 0 || localGamesPlayed === 0) {
                         if (currentPlayerSetter === 1) {
                             player1LocalScore++;
