@@ -442,7 +442,7 @@
                 if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
                     firebaseConfig = JSON.parse(__firebase_config);
                 } else {
-                     const deployedFirebaseConfig = {
+                    const deployedFirebaseConfig = {
   apiKey: "AIzaSyDEChwcDmmrXw_UZgWaDAU8iShFSbBv-l8",
   authDomain: "cryptic-quad.firebaseapp.com",
   projectId: "cryptic-quad",
@@ -708,10 +708,10 @@
             const isUserOriginalPlayer1 = gameData.player1_original === userId;
 
             if (gameData.player2_original) {
-                p1NameSpan.textContent = isUserOriginalPlayer1 ? gameData.p1_name : gameData.p2_name;
-                p2NameSpan.textContent = !isUserOriginalPlayer1 ? gameData.p1_name : gameData.p2_name;
-                document.getElementById('player1Score').textContent = isUserOriginalPlayer1 ? gameData.player1_score : gameData.player2_score;
-                document.getElementById('player2Score').textContent = !isUserOriginalPlayer1 ? gameData.player1_score : gameData.player2_score;
+                p1NameSpan.textContent = gameData.p1_name;
+                p2NameSpan.textContent = gameData.p2_name;
+                document.getElementById('player1Score').textContent = gameData.player1_score;
+                document.getElementById('player2Score').textContent = gameData.player2_score;
                 
                 const canEditP1 = isUserOriginalPlayer1;
                 const canEditP2 = !isUserOriginalPlayer1;
@@ -723,7 +723,6 @@
                 editP2NameBtn.disabled = !canEditP2;
                 editP2NameBtn.classList.toggle('opacity-25', !canEditP2);
                 editP2NameBtn.classList.toggle('cursor-not-allowed', !canEditP2);
-
             } else {
                 scoreDisplay.classList.add('hidden');
             }
@@ -781,7 +780,7 @@
                     gameControls.classList.add('hidden');
 
                     let endMessage;
-                     if (gameData.total_games_played === 0 && gameData.score_to_beat > 0) {
+                    if (gameData.total_games_played === 0 && gameData.score_to_beat > 0) {
                         const guesserName = (gameData.winner === gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
                         const setterName = (gameData.winner !== gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
                         if (userId === gameData.winner) { 
