@@ -164,7 +164,7 @@
 
         <!-- Main Message Area (for global messages) -->
         <div id="mainMessageArea" class="text-center min-h-[2.5rem] mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
-
+        
         <!-- Start Screen -->
         <div id="startScreen" class="screen text-center">
              <div class="mt-16 mb-16">
@@ -791,8 +791,8 @@
             const isUserOriginalPlayer1 = gameData.player1_original === userId;
 
             if (gameData.player2_original) {
-                p1NameSpan.textContent = `${gameData.p1_name} ${gameData.p1_streak > 1 ? `🔥${gameData.p1_streak}`:''}`;
-                p2NameSpan.textContent = `${gameData.p2_name} ${gameData.p2_streak > 1 ? `🔥${gameData.p2_streak}`:''}`;
+                p1NameSpan.textContent = `${gameData.p1_name} ${gameData.p1_streak > 1 ? `🔥${gameData.p1_streak}` : ''}`;
+                p2NameSpan.textContent = `${gameData.p2_name} ${gameData.p2_streak > 1 ? `🔥${gameData.p2_streak}` : ''}`;
                 document.getElementById('player1Score').textContent = gameData.player1_score;
                 document.getElementById('player2Score').textContent = gameData.player2_score;
                 
@@ -977,6 +977,7 @@
             }
 
             if (cows === 4) {
+                if (sdk) sdk.game.happytime();
                 updatePayload.gameState = 'game_over';
                 
                 if (gameData.score_to_beat === 0) { 
@@ -1057,6 +1058,8 @@
         
         function goToMainMenu() {
             if (sdk) {
+                sdk.game.gameplayStop();
+                console.log("CrazyGames SDK gameplayStop() called.");
                 sdk.game.hideInviteButton();
                 sdk.ad.requestAd('midgame');
             }
@@ -1074,16 +1077,7 @@
             watermarkContainer.classList.remove('hidden');
             showScreen(modeSelectionScreen);
         }
-
-        let gameplayHasStarted = false;
-        function triggerGameplayStart() {
-            if (sdk && !gameplayHasStarted) {
-                sdk.game.gameplayStart();
-                gameplayHasStarted = true;
-                console.log("CrazyGames SDK gameplayStart() called on user interaction.");
-            }
-        }
-
+        
         function setupEventListeners() {
             themeToggleBtn.addEventListener('click', () => {
                 playSound('click');
@@ -1225,6 +1219,7 @@
                     }
 
                     if (cows === 4) { // Guessed the word
+                        if (sdk) sdk.game.happytime();
                         if (roundLost) { 
                             showMessage(`You found the word! It was "${secretWord}".`, 'info');
                             rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
@@ -1453,45 +1448,42 @@
 
         // --- Initial Load ---
         let sdk; // Define a global sdk variable
+        let gameplayHasStarted = false;
 
         async function main() {
-             try {
-                // Await for the SDK to be ready
-                sdk = await window.CrazyGames.SDK.getInstance();
-                console.log("CrazyGames SDK initialized.");
+            if (window.CrazyGames && window.CrazyGames.SDK) {
+                 try {
+                    sdk = await window.CrazyGames.SDK.getInstance();
+                    console.log("CrazyGames SDK initialized.");
 
-                // Define ad callbacks for debugging and proper handling
-                sdk.addEventListener('adStarted', () => console.log('Ad started'));
-                sdk.addEventListener('adError', () => console.log('Ad error'));
-                sdk.addEventListener('adFinished', () => console.log('Ad finished'));
+                    sdk.addEventListener('adStarted', () => console.log('Ad started'));
+                    sdk.addEventListener('adError', () => console.log('Ad error'));
+                    sdk.addEventListener('adFinished', () => console.log('Ad finished'));
 
-            } catch (error) {
-                console.warn("CrazyGames SDK failed to initialize or is not available:", error);
-                // sdk will remain undefined, and all checks for it later will fail safely
+                } catch (error) {
+                    console.warn("CrazyGames SDK failed to initialize or is not available:", error);
+                }
             }
+           
 
             const savedMuteState = localStorage.getItem('muted') === 'true';
             Tone.Destination.mute = savedMuteState;
 
-            // This function now contains the rest of the game's initialization logic
             const initializeGame = () => {
                  initializeFirebase().then(() => {
                     const urlParams = new URLSearchParams(window.location.search);
                     const lobbyId = urlParams.get('lobby');
 
                     if (lobbyId) {
-                        triggerGameplayStart(); // Trigger gameplay start if joining from link
                         console.log('Lobby ID found in URL:', lobbyId);
                         gameMode = 'twoPlayerOnline';
                         showScreen(onlineLobbyScreen);
                         joinGameIdInput.value = lobbyId;
-                        // Disable the form while auto-joining
                         joinGameIdInput.disabled = true;
                         joinOnlineGameButton.disabled = true;
                         createOnlineGameButton.disabled = true;
-                        joinOnlineGame(); // Automatically try to join
+                        joinOnlineGame();
                     } else {
-                        // Show the start screen instead of the main menu
                         showScreen(startScreen);
                     }
 
@@ -1501,20 +1493,13 @@
             
             initializeGame();
         }
-
-        // Add the event listener for the new start button
-        startButton.addEventListener('click', () => {
-            triggerGameplayStart();
-            playSound('click');
-            showScreen(modeSelectionScreen);
-        });
-
-
+        
         window.onload = main;
 
 
         // --- Sound Effects ---
         let soundsReady = false;
+        
         document.body.addEventListener('click', async () => {
             if (!soundsReady) {
                 await Tone.start();
