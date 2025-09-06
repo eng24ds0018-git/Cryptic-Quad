@@ -164,7 +164,7 @@
 
         <!-- Main Message Area (for global messages) -->
         <div id="mainMessageArea" class="text-center min-h-[2.5rem] mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
-        
+
         <!-- Start Screen -->
         <div id="startScreen" class="screen text-center">
              <div class="mt-16 mb-16">
@@ -173,7 +173,7 @@
                 </button>
              </div>
         </div>
-
+        
         <!-- Mode Selection Screen -->
         <div id="modeSelectionScreen" class="hidden screen">
             <h2 class="text-2xl font-bold text-center text-slate-700 dark:text-slate-200 mb-6">Choose a Game Mode</h2>
@@ -1079,6 +1079,16 @@
         }
         
         function setupEventListeners() {
+            startButton.addEventListener('click', () => {
+                if (sdk && !gameplayHasStarted) {
+                    sdk.game.gameplayStart();
+                    gameplayHasStarted = true;
+                    console.log("CrazyGames SDK gameplayStart() called.");
+                }
+                playSound('click');
+                showScreen(modeSelectionScreen);
+            });
+            
             themeToggleBtn.addEventListener('click', () => {
                 playSound('click');
                 document.documentElement.classList.toggle('dark');
@@ -1475,6 +1485,11 @@
                     const lobbyId = urlParams.get('lobby');
 
                     if (lobbyId) {
+                        if (sdk && !gameplayHasStarted) {
+                            sdk.game.gameplayStart();
+                            gameplayHasStarted = true;
+                            console.log("CrazyGames SDK gameplayStart() called from invite link.");
+                        }
                         console.log('Lobby ID found in URL:', lobbyId);
                         gameMode = 'twoPlayerOnline';
                         showScreen(onlineLobbyScreen);
@@ -1521,7 +1536,7 @@
             switch(sound) {
                 case 'click': sounds.click.triggerAttackRelease('C5', '8n'); break;
                 case 'type': sounds.type.triggerAttackRelease('C2', '8n', Tone.now()); break;
-                case 'ding': sounds.ding.triggerAttackRelease('C5', '8n', Tone.now()); break;
+                case 'ding': sounds.ding.triggerAttackRelease('C5', '8n'); break;
                 case 'win': sounds.win.triggerAttackRelease(['C5', 'E5', 'G5'], '8n'); break;
                 case 'lose': sounds.lose.triggerAttackRelease('C3', '4n'); break;
             }
