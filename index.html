@@ -1,4 +1,188 @@
-<!DOCTYPE html>
+        
+        <!-- Mode Selection Screen -->
+        <div id="modeSelectionScreen" class="hidden screen">
+            <h2 class="text-3xl font-bold text-center text-white mb-8">Choose Game Mode</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+                <div class="relative">
+                    <button id="singlePlayerButton" class="btn-primary text-white font-bold py-6 px-8 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 w-full text-lg">
+                        🎯 Single Player
+                        <p class="text-sm text-white text-opacity-80 mt-1">Play against the computer</p>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button id="twoPlayerButton" class="btn-success text-white font-bold py-6 px-8 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-300 w-full text-lg">
+                        👥 Two Player
+                        <p class="text-sm text-white text-opacity-80 mt-1">Play with a friend locally</p>
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-center mt-10">
+                <button id="howToPlayButton" class="btn-secondary text-white font-semibold py-3 px-8 rounded-lg focus:outline-none focus:ring-4 focus:ring-gray-300 transition-all duration-300">
+                    📖 How to Play
+                </button>
+            </div>
+        </div>
+
+        <!-- Difficulty Selection Screen -->
+        <div id="difficultySelectionScreen" class="hidden screen text-center">
+            <h2 class="text-3xl font-bold text-white mb-8">Select Difficulty</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="relative">
+                    <button data-difficulty="beginner" class="difficulty-btn btn-success text-white font-bold py-6 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-300 w-full">
+                        <div class="text-2xl mb-2">🌱</div>
+                        <div class="text-lg font-bold">Beginner</div>
+                        <p class="text-sm text-white text-opacity-80 mt-2">Common 4-letter words</p>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button data-difficulty="intermediate" class="difficulty-btn btn-warning text-white font-bold py-6 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-yellow-300 w-full">
+                        <div class="text-2xl mb-2">🔥</div>
+                        <div class="text-lg font-bold">Intermediate</div>
+                        <p class="text-sm text-white text-opacity-80 mt-2">More challenging words</p>
+                    </button>
+                </div>
+                <div class="relative">
+                    <button data-difficulty="pro" class="difficulty-btn btn-danger text-white font-bold py-6 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-red-300 w-full">
+                        <div class="text-2xl mb-2">💀</div>
+                        <div class="text-lg font-bold">Pro</div>
+                        <p class="text-sm text-white text-opacity-80 mt-2">Expert level words</p>
+                    </button>
+                </div>
+            </div>
+            <button id="backToMenuFromDiff" class="mt-10 text-lg font-semibold text-white text-opacity-70 hover:text-opacity-100 transition-all">← Back to Main Menu</button>
+        </div>
+
+        <!-- How to Play Screen -->
+        <div id="howToPlayScreen" class="hidden screen">
+            <h2 class="text-3xl font-bold text-center text-white mb-8">How to Play</h2>
+            <div class="max-w-4xl mx-auto bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-2xl p-8 text-white">
+                <div class="space-y-6">
+                    <p class="text-lg text-white text-opacity-90">Cryptic Quad is a code-breaking game where you guess a secret 4-letter word.</p>
+                    
+                    <div class="bg-white bg-opacity-5 rounded-xl p-6">
+                        <h3 class="font-bold text-xl mb-4 text-center">Game Rules</h3>
+                        <ul class="space-y-3 text-white text-opacity-80">
+                            <li class="flex items-start gap-3">
+                                <span class="text-green-400 text-xl">✓</span>
+                                <span>The word has <strong>no repeating consecutive letters</strong> (e.g., 'tree' is invalid, but 'pump' is valid)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="text-blue-400 text-xl">ℹ</span>
+                                <span>You get feedback on your guess in the form of "Cows" and "Bulls"</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-green-500 bg-opacity-20 rounded-xl p-6 border border-green-400 border-opacity-30">
+                            <h4 class="font-bold text-lg mb-3 text-green-300">🐮 Cow</h4>
+                            <p class="text-white text-opacity-80">A correct letter in the correct position</p>
+                        </div>
+                        <div class="bg-yellow-500 bg-opacity-20 rounded-xl p-6 border border-yellow-400 border-opacity-30">
+                            <h4 class="font-bold text-lg mb-3 text-yellow-300">🐃 Bull</h4>
+                            <p class="text-white text-opacity-80">A correct letter but in the wrong position</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-purple-500 bg-opacity-20 rounded-xl p-6 border border-purple-400 border-opacity-30">
+                        <h4 class="font-bold text-lg mb-4 text-purple-300">Example</h4>
+                        <p class="mb-2">Secret word: <span class="font-mono bg-white bg-opacity-20 px-2 py-1 rounded">WORD</span></p>
+                        <p class="mb-2">Your guess: <span class="font-mono bg-white bg-opacity-20 px-2 py-1 rounded">WORK</span></p>
+                        <p class="text-green-300 font-semibold">Result: 3 Cows, 0 Bulls (W, O, R are correct and in position)</p>
+                    </div>
+
+                    <p class="text-center text-lg text-white text-opacity-90">Keep guessing until you get 4 Cows! Good luck!</p>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <button id="backToMenuFromHelp" class="btn-primary text-white font-bold py-3 px-8 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300">Got it!</button>
+            </div>
+        </div>
+
+        <!-- Set Word Screen -->
+        <div id="setWordScreen" class="hidden screen text-center">
+            <h2 id="setWordTitle" class="text-3xl font-bold text-white mb-4">Set the Secret Word</h2>
+            <p id="setWordSubtitle" class="text-white text-opacity-70 mb-8 text-lg">Enter a 4-letter word for the other player to guess.</p>
+            <div id="setWordMessageArea" class="text-center min-h-12 mb-6 font-semibold text-lg hidden items-center justify-center p-4 rounded-xl"></div>
+            
+            <div class="max-w-md mx-auto">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <input type="password" id="secretWordInput" maxlength="4" placeholder="Enter secret word..."
+                           class="enhanced-input flex-grow px-6 py-4 text-xl text-white placeholder-white placeholder-opacity-50 rounded-xl focus:outline-none transition-all duration-300 text-center font-mono tracking-widest">
+                    <button id="startGameButton"
+                            class="btn-success text-white font-bold py-4 px-8 rounded-xl focus:outline-none focus:ring-4 focus:ring-green-300 whitespace-nowrap">
+                        Start Game
+                    </button>
+                </div>
+            </div>
+            
+            <button id="backToMenuFromSet" class="mt-10 text-lg font-semibold text-white text-opacity-70 hover:text-opacity-100 transition-all">← Back to Menu</button>
+        </div>
+        
+        <!-- Main Game Screen -->
+        <div id="gameScreen" class="hidden screen">
+            <!-- Enhanced Score Display -->
+            <div id="scoreDisplay" class="hidden text-center mb-6">
+                <div class="score-panel p-6 rounded-2xl">
+                    <div class="flex justify-between items-center text-xl text-white font-bold">
+                        <span id="player1Name" class="bg-white bg-opacity-10 px-4 py-2 rounded-lg">Player 1</span>
+                        <div class="text-3xl font-extrabold">
+                            <span id="player1Score" class="text-green-400">0</span>
+                            <span class="text-white text-opacity-50 mx-3">-</span>
+                            <span id="player2Score" class="text-blue-400">0</span>
+                        </div>
+                        <span id="player2Name" class="bg-white bg-opacity-10 px-4 py-2 rounded-lg">Player 2</span>
+                    </div>
+                    <p id="scoreToBeatDisplay" class="text-white text-opacity-70 mt-3 text-sm font-medium hidden"></p>
+                    <div id="timerDisplay" class="text-white text-opacity-70 mt-3 text-sm font-medium hidden">
+                        Time: <span id="timer" class="font-mono bg-white bg-opacity-20 px-2 py-1 rounded">0s</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row lg:gap-8">
+                <!-- Enhanced Left Panel: Game Controls -->
+                <div class="w-full lg:w-2/3">
+                    <div id="guessControls" class="mb-8">
+                        <div class="flex flex-col sm:flex-row gap-4 max-w-2xl mx-auto">
+                            <input type="text" id="guessInput" maxlength="4" placeholder="Enter your guess..."
+                                   class="enhanced-input flex-grow px-6 py-4 text-2xl text-white placeholder-white placeholder-opacity-50 rounded-xl focus:outline-none transition-all duration-300 text-center font-mono tracking-widest uppercase">
+                            <button id="guessButton"
+                                    class="btn-primary text-white font-bold py-4 px-8 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 whitespace-nowrap text-lg">
+                                🎯 Guess
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="gameControls" class="flex justify-center mb-8">
+                        <button id="quitButton"
+                                class="btn-danger text-white font-bold py-3 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-red-300 transition-all duration-300">
+                            🏳️ Quit & Reveal
+                        </button>
+                    </div>
+
+                    <div id="messageArea" class="text-center min-h-12 mb-6 font-semibold text-lg flex items-center justify-center p-4 rounded-xl"></div>
+
+                    <!-- Enhanced Rematch Request Area -->
+                    <div id="rematchRequestArea" class="hidden text-center p-6 bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-2xl border border-white border-opacity-20">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Enhanced Right Panel: Guess History -->
+                <div class="w-full lg:w-1/3 mt-8 lg:mt-0">
+                    <div class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-2xl shadow-2xl overflow-hidden border border-white border-opacity-20">
+                        <div class="history-header grid grid-cols-4 gap-2 text-center font-bold text-white p-4">
+                            <div class="text-sm">#</div>
+                            <div class="text-sm">Guess</div>
+                            <div class="text-sm">Cows 🐮</div>
+                            <div class="text-sm">Bulls 🐃</div>
+                        </div>
+                        <div id="guessHistory" class="max-h-96 overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+        </div><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,44 +190,31 @@
     <title>Cryptic Quad Game</title>
     <!-- CRAZYGAMES SDK SCRIPT -->
     <script src="https://sdk.crazygames.com/crazygames-sdk-v2.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Permanent+Marker&display=swap" rel="stylesheet">
-    <script>
-        // Set theme on initial load
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    </script>
     <style>
+        /* Prevent mobile text selection and zoom */
         body {
-            font-family: 'Inter', sans-serif;
-            background-size: cover;
-            background-position: center;
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             background-attachment: fixed;
-            transition: background-image 0.5s ease-in-out;
+            transition: all 0.3s ease;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .dark body {
-             /* Instructions: To add your background, uncomment the 'background-image' line below and paste your Base64 string. */
-        }
-
-        .font-marker {
-            font-family: 'Permanent Marker', cursive;
+            background: linear-gradient(135deg, #2d1b69 0%, #11051f 100%);
         }
         
         .hidden { display: none; }
 
-        /* --- ENHANCED GLASSMORPHISM EFFECT --- */
+        /* Enhanced glassmorphism effect */
         .glass-panel {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(8px);
@@ -53,103 +224,80 @@
 
         .dark .glass-panel {
             background: rgba(30, 41, 59, 0.35);
-             border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* Style for the guess history table */
-        #guessHistory .history-row:nth-child(even) { background-color: rgba(248, 250, 252, 0.7); } /* slate-50/70 */
-        #guessHistory .history-row:nth-child(odd) { background-color: rgba(255, 255, 255, 0.7); }
-        .dark #guessHistory .history-row:nth-child(even) { background-color: rgba(51, 65, 85, 0.5); } /* slate-700/50 */
-        .dark #guessHistory .history-row:nth-child(odd) { background-color: rgba(30, 41, 59, 0.5); } /* slate-800/50 */
-
-        /* Custom message area styles */
-        .message-success { background-color: rgba(220, 252, 231, 0.8); color: #166534; }
-        .dark .message-success { background-color: rgba(20, 83, 45, 0.8); color: #bbf7d0; }
-        .message-error { background-color: rgba(254, 226, 226, 0.8); color: #991b1b; }
-        .dark .message-error { background-color: rgba(127, 29, 29, 0.8); color: #fecaca; }
-        .message-info { background-color: rgba(224, 231, 255, 0.8); color: #3730a3; }
-        .dark .message-info { background-color: rgba(49, 46, 129, 0.8); color: #c7d2fe; }
-        .message-warning { background-color: rgba(254, 249, 195, 0.8); color: #854d0e; }
-        .dark .message-warning { background-color: rgba(113, 63, 18, 0.8); color: #fef08a; }
-
-        /* Animation for screen transitions */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .screen {
-            animation: fadeIn 0.4s ease-out forwards;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in-down {
-            animation: fadeInDown 0.6s ease-out forwards;
-        }
-        
         /* Button press animation */
         button:active {
             transform: scale(0.95);
             transition: transform 0.1s ease;
         }
 
-        /* Guess history animation */
-        @keyframes flipIn {
-            from { transform: perspective(400px) rotate3d(1, 0, 0, 90deg); opacity: 0; }
-            to { transform: perspective(400px) rotate3d(1, 0, 0, 0deg); opacity: 1; }
+        /* Screen transitions */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
-        .history-row {
-            animation: flipIn 0.5s ease-out forwards;
+        
+        .screen {
+            animation: fadeIn 0.4s ease-out forwards;
         }
 
+        /* Guess history styling */
+        .history-row:nth-child(even) { background-color: rgba(248, 250, 252, 0.7); }
+        .history-row:nth-child(odd) { background-color: rgba(255, 255, 255, 0.7); }
+        .dark .history-row:nth-child(even) { background-color: rgba(51, 65, 85, 0.5); }
+        .dark .history-row:nth-child(odd) { background-color: rgba(30, 41, 59, 0.5); }
+
+        /* Message styles */
+        .message-success { background-color: rgba(220, 252, 231, 0.8); color: #166534; }
+        .dark .message-success { background-color: rgba(20, 83, 45, 0.8); color: #bbf7d0; }
+        .message-error { background-color: rgba(254, 226, 226, 0.8); color: #991b1b; }
+        .dark .message-error { background-color: rgba(127, 29, 29, 0.8); color: #fecaca; }
+        .message-info { background-color: rgba(224, 231, 255, 0.8); color: #3730a3; }
+        .dark .message-info { background-color: rgba(49, 46, 129, 0.8); color: #c7d2fe; }
+
         /* Confetti animation */
-        #confetti-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 100; }
-        .confetti { position: absolute; width: 10px; height: 10px; background-color: #f00; opacity: 0; }
+        #confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 100; }
+        .confetti { position: absolute; width: 10px; height: 10px; opacity: 0; }
         @keyframes fall {
-            from { transform: translateY(0) rotate(0deg); opacity: 1; }
+            from { transform: translateY(-100px) rotate(0deg); opacity: 1; }
             to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* Responsive design improvements */
+        @media (max-width: 768px) {
+            .glass-panel { padding: 1rem; margin: 0.5rem; }
+            .text-6xl { font-size: 2.5rem; }
+            .text-5xl { font-size: 2rem; }
         }
     </style>
 </head>
-<body class="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 flex items-center justify-center min-h-screen p-4 transition-all duration-300">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 flex items-center justify-center min-h-screen p-2 transition-all duration-300">
     
-    <div class="w-full max-w-4xl mx-auto glass-panel rounded-2xl shadow-2xl p-6 md:p-8 transition-all duration-300 relative overflow-y-auto max-h-screen">
+    <div class="w-full max-w-4xl mx-auto glass-panel rounded-2xl shadow-2xl p-4 md:p-8 transition-all duration-300 relative overflow-y-auto max-h-screen">
         <div id="confetti-container"></div>
         
-        <div id="watermarkContainer" class="absolute top-4 left-4 text-left">
-            <p class="text-xs text-slate-600 dark:text-slate-400 font-semibold">Developed by: Synergy Tech.</p>
-            <button id="knowMoreButton" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline">Know more</button>
+        <!-- Developer watermark -->
+        <div class="absolute top-4 left-4 text-left">
+            <p class="text-xs text-gray-600 dark:text-gray-400 font-semibold">Developed by: Synergy Tech.</p>
         </div>
 
         <header class="text-center mb-8">
-            <h1 class="font-marker text-5xl md:text-6xl bg-gradient-to-r from-violet-600 to-indigo-600 dark:from-violet-400 dark:to-indigo-400 bg-clip-text text-transparent pb-2 fade-in-down">Cryptic Quad</h1>
+            <h1 class="font-bold text-5xl md:text-6xl bg-gradient-to-r from-purple-600 to-blue-600 dark:from-purple-400 dark:to-blue-400 bg-clip-text text-transparent pb-2">Cryptic Quad</h1>
             <div id="subheadingContainer">
-                <p class="text-slate-500 dark:text-slate-400 mt-2 text-lg">Analyse • Guess • Enjoy</p>
-                <p class="text-slate-600 dark:text-slate-500 mt-1">A 4-letter word guessing game.</p>
+                <p class="text-gray-500 dark:text-gray-400 mt-2 text-lg">Analyze • Guess • Enjoy</p>
+                <p class="text-gray-600 dark:text-gray-500 mt-1">A 4-letter word guessing game.</p>
             </div>
-            <p id="gameStatus" class="text-slate-500 dark:text-slate-400 mt-2 hidden"></p>
-            <div class="absolute top-4 right-4 flex items-center gap-1 bg-slate-200/50 dark:bg-slate-700/50 p-1 rounded-full">
-                <button id="muteButton" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-300/50 dark:hover:bg-slate-600/50 transition-colors">
+            <p id="gameStatus" class="text-gray-500 dark:text-gray-400 mt-2 hidden"></p>
+            
+            <!-- Controls -->
+            <div class="absolute top-4 right-4 flex items-center gap-1 bg-gray-200 dark:bg-gray-700 bg-opacity-50 p-1 rounded-full">
+                <button id="muteButton" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600 hover:bg-opacity-50 transition-colors">
                     <svg id="unmuteIcon" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
                     <svg id="muteIcon" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" clip-rule="evenodd" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l-4-4m0 4l4-4" /></svg>
                 </button>
-                <button id="fullscreenButton" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-300/50 dark:hover:bg-slate-600/50 transition-colors">
-                    <svg id="enterFullscreenIcon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
-                        <path d="M16 3h3a2 2 0 0 1 2 2v3"/>
-                        <path d="M16 21h3a2 2 0 0 0 2-2v-3"/>
-                        <path d="M8 21H5a2 2 0 0 1-2-2v-3"/>
-                   </svg>
-                   <svg id="exitFullscreenIcon" class="w-6 h-6 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M8 3v3a2 2 0 0 1-2 2H3"/>
-                        <path d="M16 3v3a2 2 0 0 0 2 2h3"/>
-                        <path d="M8 21v-3a2 2 0 0 0-2-2H3"/>
-                        <path d="M16 21v-3a2 2 0 0 1 2-2h3"/>
-                   </svg>
-                </button>
-                <button id="theme-toggle" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-300/50 dark:hover:bg-slate-600/50 transition-colors">
+                <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-300 dark:hover:bg-gray-600 hover:bg-opacity-50 transition-colors">
                     <svg id="theme-icon-light" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
@@ -160,402 +308,341 @@
             </div>
         </header>
 
-        <!-- Main Message Area (for global messages) -->
-        <div id="mainMessageArea" class="text-center min-h-[2.5rem] mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
+        <!-- Main Message Area -->
+        <div id="mainMessageArea" class="text-center min-h-10 mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
 
         <!-- Start Screen -->
         <div id="startScreen" class="screen text-center">
-             <div class="mt-16 mb-16">
-                 <button id="startButton" class="bg-gradient-to-br from-green-500 to-emerald-500 text-white font-bold py-4 px-10 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 transform transition-all duration-200 hover:scale-105 shadow-lg text-2xl">
-                    START
+            <div class="mt-16 mb-16">
+                <button id="startButton" class="bg-gradient-to-br from-green-500 to-green-600 text-white font-bold py-4 px-10 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 transform transition-all duration-200 hover:scale-105 shadow-lg text-2xl">
+                    START GAME
                 </button>
-             </div>
+            </div>
         </div>
         
         <!-- Mode Selection Screen -->
         <div id="modeSelectionScreen" class="hidden screen">
-            <h2 class="text-2xl font-bold text-center text-slate-700 dark:text-slate-200 mb-6">Choose a Game Mode</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button id="singlePlayerButton" class="bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:from-violet-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800 transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-violet-500/50 dark:hover:shadow-violet-400/30">
+            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-200 mb-6">Choose Game Mode</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
+                <button id="singlePlayerButton" class="bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
                     Single Player
                 </button>
-                <button id="twoPlayerButton" class="bg-gradient-to-br from-green-600 to-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-emerald-500/50 dark:hover:shadow-emerald-400/30">
-                    Two Player (Local)
-                </button>
-                 <button id="onlinePlayerButton" class="bg-gradient-to-br from-sky-600 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:from-sky-700 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-sky-300 dark:focus:ring-sky-800 transform transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-sky-500/50 dark:hover:shadow-sky-400/30">
-                    Two Player (Online)
+                <button id="twoPlayerButton" class="bg-gradient-to-br from-green-600 to-green-700 text-white font-bold py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
+                    Two Player
                 </button>
             </div>
-             <div class="flex justify-center gap-4 mt-8">
-                <button id="howToPlayButton" class="bg-slate-500/80 dark:bg-slate-600/80 text-white font-bold py-2 px-6 rounded-lg hover:bg-slate-600 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:focus:ring-slate-500 transition-colors duration-300 shadow-md">
+            <div class="flex justify-center gap-4 mt-8">
+                <button id="howToPlayButton" class="bg-gray-500 bg-opacity-80 dark:bg-gray-600 dark:bg-opacity-80 text-white font-bold py-2 px-6 rounded-lg hover:bg-gray-600 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-500 transition-colors duration-300 shadow-md">
                     How to Play
                 </button>
-                <button id="howPointsWorkButton" class="bg-slate-500/80 dark:bg-slate-600/80 text-white font-bold py-2 px-6 rounded-lg hover:bg-slate-600 dark:hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-300 dark:focus:ring-slate-500 transition-colors duration-300 shadow-md">
-                    How Points Work
-                </button>
             </div>
-        </div>
-        
-        <!-- Online Lobby Screen -->
-        <div id="onlineLobbyScreen" class="hidden screen text-center">
-            <h2 class="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-6">Online Multiplayer</h2>
-            <div class="space-y-6">
-                <div>
-                    <h3 class="text-xl font-semibold mb-2">Create a New Game</h3>
-                    <button id="createOnlineGameButton" class="bg-gradient-to-br from-green-600 to-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 shadow-lg transition-all">Create Game</button>
-                </div>
-                <div>
-                    <h3 class="text-xl font-semibold mb-2">Or Join an Existing Game</h3>
-                    <div class="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
-                        <input type="text" id="joinGameIdInput" placeholder="Enter Game ID..." class="form-input flex-grow w-full px-4 py-3 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-900/50 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
-                        <button id="joinOnlineGameButton" class="bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:from-violet-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800 shadow-lg transition-all">Join Game</button>
-                    </div>
-                </div>
-            </div>
-            <div id="gameIdDisplay" class="mt-8 hidden">
-                 <h3 class="text-lg font-semibold">Game Created!</h3>
-                <p class="text-slate-500 dark:text-slate-400">Share with your friend, or use the "Invite Friends" button.</p>
-                <div class="flex items-center justify-center gap-2 mt-2 bg-slate-200 dark:bg-slate-700/50 p-3 rounded-lg max-w-sm mx-auto">
-                    <strong id="gameIdText" class="text-2xl font-mono text-indigo-600 dark:text-indigo-400"></strong>
-                    <button id="copyGameIdButton" title="Copy Game ID" class="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
-                        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                    </button>
-                    <button id="copyInviteLinkButton" title="Copy Invite Link" class="p-2 rounded-md hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>
-                    </button>
-                </div>
-                <p class="mt-4 text-slate-500 dark:text-slate-400 animate-pulse">Waiting for another player to join...</p>
-            </div>
-             <button id="backToMenuFromOnline" class="mt-8 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Back to Main Menu</button>
         </div>
 
         <!-- Difficulty Selection Screen -->
         <div id="difficultySelectionScreen" class="hidden screen text-center">
-             <h2 class="text-2xl font-bold text-center text-slate-700 dark:text-slate-200 mb-6">Select Difficulty</h2>
+            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-200 mb-6">Select Difficulty</h2>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button data-difficulty="beginner" class="difficulty-btn bg-gradient-to-br from-green-500 to-emerald-500 text-white font-bold py-3 px-6 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
+                <button data-difficulty="beginner" class="difficulty-btn bg-gradient-to-br from-green-500 to-green-600 text-white font-bold py-3 px-6 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
                     Beginner
                 </button>
-                <button data-difficulty="intermediate" class="difficulty-btn bg-gradient-to-br from-yellow-500 to-amber-500 text-white font-bold py-3 px-6 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
+                <button data-difficulty="intermediate" class="difficulty-btn bg-gradient-to-br from-yellow-500 to-yellow-600 text-white font-bold py-3 px-6 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-yellow-300 dark:focus:ring-yellow-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
                     Intermediate
                 </button>
-                <button data-difficulty="pro" class="difficulty-btn bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-3 px-6 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
+                <button data-difficulty="pro" class="difficulty-btn bg-gradient-to-br from-red-500 to-red-600 text-white font-bold py-3 px-6 rounded-lg hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
                     Pro
                 </button>
             </div>
-            <button id="backToMenuFromDiff" class="mt-8 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Back to Main Menu</button>
+            <button id="backToMenuFromDiff" class="mt-8 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">Back to Main Menu</button>
         </div>
 
         <!-- How to Play Screen -->
-        <div id="howToPlayScreen" class="hidden screen prose dark:prose-invert max-w-none">
-            <h2 class="text-2xl font-bold text-center text-slate-700 dark:text-slate-200 mb-6">How to Play</h2>
-            <p>Cryptic Quad is a code-breaking game where you have to guess a secret 4-letter word.</p>
-            <ul>
-                <li>The word has <strong>no repeating consecutive letters</strong> (e.g., 'tree' is invalid, but 'pump' is valid).</li>
-                <li>You get feedback on your guess in the form of "Cows" and "Bulls".</li>
-            </ul>
-            <h3 class="font-semibold mt-4">What are Cows and Bulls?</h3>
-            <p><strong>🐮 Cow:</strong> A correct letter in the correct position.</p>
-            <p><strong>🐃 Bull:</strong> A correct letter but in the wrong position.</p>
-            <h3 class="font-semibold mt-4">Example Gameplay</h3>
-            <p>Let's say the secret word is <strong>WORD</strong>.</p>
-            <div class="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg my-4">
-                <p>You guess: <strong>WORK</strong></p>
-                <p><strong>Result:</strong> 3 Cows (W, O, R are correct and in position), 0 Bulls.</p>
+        <div id="howToPlayScreen" class="hidden screen max-w-none">
+            <h2 class="text-2xl font-bold text-center text-gray-700 dark:text-gray-200 mb-6">How to Play</h2>
+            <div class="prose dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
+                <p>Cryptic Quad is a code-breaking game where you guess a secret 4-letter word.</p>
+                <ul class="list-disc ml-6">
+                    <li>The word has <strong>no repeating consecutive letters</strong> (e.g., 'tree' is invalid, but 'pump' is valid).</li>
+                    <li>You get feedback on your guess in the form of "Cows" and "Bulls".</li>
+                </ul>
+                <h3 class="font-semibold mt-4">What are Cows and Bulls?</h3>
+                <p><strong>🐮 Cow:</strong> A correct letter in the correct position.</p>
+                <p><strong>🐃 Bull:</strong> A correct letter but in the wrong position.</p>
+                <h3 class="font-semibold mt-4">Example</h3>
+                <p>Secret word: <strong>WORD</strong></p>
+                <div class="bg-gray-100 dark:bg-gray-700 bg-opacity-50 p-4 rounded-lg my-4">
+                    <p>You guess: <strong>WORK</strong></p>
+                    <p><strong>Result:</strong> 3 Cows, 0 Bulls (W, O, R are correct and in position)</p>
+                </div>
+                <p>Keep guessing until you get 4 Cows! Good luck!</p>
             </div>
-            <div class="bg-slate-100 dark:bg-slate-700/50 p-4 rounded-lg my-4">
-                <p>You guess: <strong>DREW</strong></p>
-                <p><strong>Result:</strong> 1 Cow (D is correct and in position), 2 Bulls (R and E are in the word, but wrong spots).</p>
-            </div>
-            <p>Keep guessing until you get 4 Cows! Good luck!</p>
             <div class="text-center mt-6">
-                 <button id="backToMenuFromHelp" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Got it!</button>
+                <button id="backToMenuFromHelp" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">Got it!</button>
             </div>
         </div>
-
-        <!-- How Points Work Screen -->
-        <div id="howPointsWorkScreen" class="hidden screen prose dark:prose-invert max-w-none">
-            <h2 class="text-2xl font-bold text-center text-slate-700 dark:text-slate-200 mb-6">How Points Work</h2>
-            <p>In 2-player modes, the game is a race! It's not just about guessing the word, but guessing it faster than your opponent.</p>
-            <h3 class="font-semibold mt-4">The Challenge</h3>
-            <p><strong>Round 1:</strong> Player 1 sets a word, and Player 2 guesses. Let's say Player 2 takes <strong>5 attempts</strong>. This becomes the "Score to Beat".</p>
-            <p><strong>Round 2:</strong> The roles swap. Player 2 sets a word. Player 1 must now guess the new word in <strong>fewer than 5 attempts</strong> (so, 4 or less) to win the point for the match.</p>
-            <h3 class="font-semibold mt-4">Winning a Round</h3>
-            <ul>
-                <li>If Player 1 guesses in 4 attempts, they win the point!</li>
-                <li>If Player 1 takes 5 attempts, it's a TIE and both players get one point.</li>
-                <li>If Player 1 takes 6 attempts or more, they lose the point, even if they guess the word. The win goes to Player 2.</li>
-                <li>If Player 1 has not guessed by the 5th attempt, a "You lost" message appears, but they can keep guessing. The point is already decided.</li>
-            </ul>
-            <p>The first round of a match has no attempt limit. Good luck beating the score!</p>
-            <div class="text-center mt-6">
-                 <button id="backToMenuFromPoints" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Got it!</button>
-            </div>
-        </div>
-
-        <!-- Know More Screen -->
-        <div id="knowMoreScreen" class="hidden screen prose dark:prose-invert max-w-none">
-            <h2 class="text-2xl font-bold text-center text-slate-700 dark:text-slate-200 mb-6">A message from the creators!</h2>
-            <p class="text-justify">Welcome to Cryptic Quad! We believe the greatest challenges often come in the smallest packages. That's the idea that sparked this game: a deceptively simple quest to solve a four-letter puzzle. Whether you're a word wizard or just looking for a daily brain-teaser, we designed Cryptic Quad to be your perfect mental workout. Find joy in that "aha!" moment when the word finally clicks.</p>
-            <p class="text-justify">We're Jashwanth R and Maduraa BS, the two developers behind Synergy Tech. We're passionate about creating sleek, smart, and engaging experiences. Cryptic Quad is our labour of love and a reflection of our own synergy. We're so excited to share it with you!</p>
-            <p class="text-justify">Thank you for playing. We hope it brings you as much fun as it brought us to create.</p>
-            <p class="text-justify">For any questions, suggestions, feedback, or bug reports please don't hesitate to reach out to us at <a href="mailto:rjashwanth562@gmail.com">rjashwanth562@gmail.com</a> and <a href="mailto:maduraakrishna@gmail.com">maduraakrishna@gmail.com</a>.</p>
-            <p class="text-right">With gratitude,<br>Jashwanth R & Maduraa BS, Synergy Tech.</p>
-            <div class="text-center mt-6">
-                 <button id="backToMenuFromKnowMore" class="bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Got it!</button>
-            </div>
-        </div>
-
 
         <!-- Set Word Screen -->
         <div id="setWordScreen" class="hidden screen text-center">
-            <h2 id="setWordTitle" class="text-2xl font-bold text-slate-700 dark:text-slate-200 mb-2">Set the Secret Word</h2>
-            <p id="setWordSubtitle" class="text-slate-500 dark:text-slate-400 mb-4">Enter a 4-letter word for the other player to guess.</p>
-            <div id="setWordMessageArea" class="text-center min-h-[2.5rem] mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
+            <h2 id="setWordTitle" class="text-2xl font-bold text-gray-700 dark:text-gray-200 mb-2">Set the Secret Word</h2>
+            <p id="setWordSubtitle" class="text-gray-500 dark:text-gray-400 mb-4">Enter a 4-letter word for the other player to guess.</p>
+            <div id="setWordMessageArea" class="text-center min-h-10 mb-4 font-medium text-lg hidden items-center justify-center p-2 rounded-lg"></div>
             <div class="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
                 <input type="password" id="secretWordInput" maxlength="4" placeholder="Enter secret word..."
-                       class="form-input flex-grow w-full px-4 py-3 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-900/50 rounded-lg transition-all duration-300 focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-500">
+                       class="flex-grow w-full px-4 py-3 text-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 bg-opacity-50 rounded-lg transition-all duration-300 focus:border-green-500 dark:focus:border-green-400 focus:ring-2 focus:ring-green-500">
                 <button id="startGameButton"
-                        class="w-full sm:w-auto bg-gradient-to-br from-green-600 to-emerald-600 text-white font-bold py-3 px-6 rounded-lg hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 shadow-lg transition-all">
+                        class="w-full sm:w-auto bg-gradient-to-br from-green-600 to-green-700 text-white font-bold py-3 px-6 rounded-lg hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-800 shadow-lg transition-all">
                     Start Game
                 </button>
             </div>
-            <button id="backToMenuFromSet" class="mt-4 text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">Back to Menu</button>
+            <button id="backToMenuFromSet" class="mt-4 text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline">Back to Menu</button>
         </div>
         
         <!-- Main Game Screen -->
         <div id="gameScreen" class="hidden screen">
-             <!-- Score Display -->
-            <div id="scoreDisplay" class="hidden text-center mb-4 p-3 bg-slate-200/50 dark:bg-slate-700/50 rounded-lg">
-                <div class="flex justify-between items-center text-lg text-slate-700 dark:text-slate-200">
-                    <div class="flex items-center gap-2">
-                        <span id="player1Name" class="font-bold">Player 1</span>
-                        <button id="editP1NameBtn" class="p-1 rounded-full hover:bg-slate-400/50 dark:hover:bg-slate-600/50">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                        </button>
-                    </div>
-                     <span class="font-bold"><span id="player1Score">0</span> - <span id="player2Score">0</span></span>
-                    <div class="flex items-center gap-2">
-                        <span id="player2Name" class="font-bold">Player 2</span>
-                        <button id="editP2NameBtn" class="p-1 rounded-full hover:bg-slate-400/50 dark:hover:bg-slate-600/50">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-                        </button>
-                    </div>
+            <!-- Score Display -->
+            <div id="scoreDisplay" class="hidden text-center mb-4 p-3 bg-gray-200 dark:bg-gray-700 bg-opacity-50 rounded-lg">
+                <div class="flex justify-between items-center text-lg text-gray-700 dark:text-gray-200">
+                    <span id="player1Name" class="font-bold">Player 1</span>
+                    <span class="font-bold"><span id="player1Score">0</span> - <span id="player2Score">0</span></span>
+                    <span id="player2Name" class="font-bold">Player 2</span>
                 </div>
-                 <p id="scoreToBeatDisplay" class="text-sm text-slate-500 dark:text-slate-400 mt-1 hidden"></p>
-                 <div id="timerDisplay" class="text-sm text-slate-500 dark:text-slate-400 mt-1 hidden">Time: <span id="timer">0s</span></div>
+                <p id="scoreToBeatDisplay" class="text-sm text-gray-500 dark:text-gray-400 mt-1 hidden"></p>
+                <div id="timerDisplay" class="text-sm text-gray-500 dark:text-gray-400 mt-1 hidden">Time: <span id="timer">0s</span></div>
             </div>
+            
             <div class="flex flex-col md:flex-row md:gap-8">
                 <!-- Left Panel: Game Controls -->
                 <div class="w-full md:w-2/3">
                     <div id="guessControls" class="flex flex-col sm:flex-row gap-3 mb-4">
                         <input type="text" id="guessInput" maxlength="4" placeholder="Enter your guess..."
-                               class="form-input flex-grow w-full px-4 py-3 text-lg border-2 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-900/50 rounded-lg transition-all duration-300 focus:border-indigo-500 dark:focus:border-indigo-400 focus:ring-2 focus:ring-indigo-500">
+                               class="flex-grow w-full px-4 py-3 text-lg border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 bg-opacity-50 rounded-lg transition-all duration-300 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-2 focus:ring-blue-500">
                         <button id="guessButton"
-                                class="w-full sm:w-auto bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:from-violet-700 hover:to-indigo-700 focus:outline-none focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
+                                class="w-full sm:w-auto bg-gradient-to-br from-purple-600 to-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:from-purple-700 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-purple-300 dark:focus:ring-purple-800 transform transition-all duration-200 hover:scale-105 shadow-lg">
                             Guess
                         </button>
                     </div>
                     
                     <div id="gameControls" class="flex justify-center gap-4 mb-6">
                         <button id="quitButton"
-                                class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 transition-all duration-300 shadow-md">
-                            Quit
+                                class="bg-gradient-to-br from-red-500 to-red-600 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-800 transition-all duration-300 shadow-md">
+                            Quit & Reveal
                         </button>
                     </div>
 
-                    <div id="messageArea" class="text-center min-h-[2.5rem] mt-8 mb-4 font-medium text-lg flex items-center justify-center p-2 rounded-lg"></div>
+                    <div id="messageArea" class="text-center min-h-10 mt-8 mb-4 font-medium text-lg flex items-center justify-center p-2 rounded-lg"></div>
 
                     <!-- Rematch Request Area -->
-                    <div id="rematchRequestArea" class="hidden text-center mt-4 p-4 bg-indigo-100/80 dark:bg-slate-700/50 rounded-lg">
-                        <!-- JS Populated -->
+                    <div id="rematchRequestArea" class="hidden text-center mt-4 p-4 bg-blue-100 dark:bg-gray-700 bg-opacity-80 rounded-lg">
+                        <!-- Populated by JavaScript -->
                     </div>
                 </div>
 
                 <!-- Right Panel: Guess History -->
                 <div class="w-full md:w-1/3 mt-6 md:mt-0">
-                     <div id="historyContainer" class="bg-white/50 dark:bg-slate-900/50 rounded-lg shadow-inner">
-                        <div class="grid grid-cols-4 gap-2 text-center font-bold text-slate-600 dark:text-slate-300 bg-slate-200/50 dark:bg-slate-700/50 p-2 rounded-t-lg">
+                    <div id="historyContainer" class="bg-white dark:bg-gray-900 bg-opacity-50 rounded-lg shadow-inner">
+                        <div class="grid grid-cols-4 gap-2 text-center font-bold text-gray-600 dark:text-gray-300 bg-gray-200 dark:bg-gray-700 bg-opacity-50 p-2 rounded-t-lg">
                             <div>#</div>
                             <div>Guess</div>
                             <div>Cows 🐮</div>
                             <div>Bulls 🐃</div>
                         </div>
-                        <div id="guessHistory" class="border-x border-b border-slate-200/50 dark:border-slate-700/50 rounded-b-lg max-h-80 overflow-y-auto"></div>
+                        <div id="guessHistory" class="border-x border-b border-gray-200 dark:border-gray-700 border-opacity-50 rounded-b-lg max-h-80 overflow-y-auto"></div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Scorecard Screen -->
-        <div id="scorecardScreen" class="hidden screen text-center">
-            <h2 id="scorecardTitle" class="text-3xl font-bold text-slate-700 dark:text-slate-200 mb-4">Match Over!</h2>
-            <div class="bg-slate-100/80 dark:bg-slate-700/50 p-6 rounded-lg max-w-md mx-auto">
-                <h3 class="text-xl font-semibold mb-4">Final Scorecard</h3>
-                <p class="text-lg">Total Games Played: <span id="totalGames" class="font-bold"></span></p>
-                <div class="mt-4 space-y-2 text-left">
-                    <p class="text-lg"><span id="scorePlayer1Name"></span>'s Wins: <span id="scorePlayer1" class="font-bold"></span></p>
-                    <p class="text-lg"><span id="scorePlayer2Name"></span>'s Wins: <span id="scorePlayer2" class="font-bold"></span></p>
-                </div>
-            </div>
-            <button id="backToMenuFromScorecard" class="mt-8 bg-gradient-to-br from-violet-600 to-indigo-600 text-white font-bold py-3 px-8 rounded-lg hover:shadow-xl transition-all">Back to Main Menu</button>
-        </div>
     </div>
     
-    <!-- Firebase -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // CrazyGames SDK Integration
+        let sdk;
+        let gameplayStarted = false;
 
-        // --- Word Lists (unchanged) ---
-        const beginnerWords = ['acid', 'also', 'back', 'band', 'bank', 'bare', 'base', 'beam', 'bean', 'bear', 'beat', 'belt', 'bend', 'best', 'bike', 'bird', 'blow', 'blue', 'boat', 'body', 'bold', 'bond', 'bone', 'born', 'both', 'bowl', 'burn', 'cake', 'calm', 'came', 'camp', 'card', 'care', 'case', 'cash', 'cast', 'cave', 'city', 'club', 'coal', 'coat', 'code', 'coin', 'cold', 'come', 'cone', 'copy', 'cord', 'core', 'corn', 'cost', 'dark', 'date', 'dawn', 'deal', 'deck', 'desk', 'dirt', 'dish', 'dock', 'done', 'down', 'drag', 'draw', 'drip', 'drop', 'duck', 'dust', 'earn', 'east', 'easy', 'face', 'fact', 'fade', 'fail', 'fair', 'fake', 'farm', 'fast', 'fear', 'file', 'film', 'find', 'fine', 'fire', 'firm', 'fish', 'five', 'flag', 'flat', 'flow', 'fold', 'font', 'ford', 'fork', 'form', 'four', 'from', 'fuel', 'game', 'gate', 'gave', 'gift', 'give', 'glad', 'glow', 'goal', 'goat', 'gold', 'gone', 'grab', 'gray', 'grid', 'grow', 'gulf', 'hair', 'half', 'hand', 'hang', 'hard', 'harm', 'hate', 'have', 'head', 'heal', 'heap', 'hear', 'heat', 'help', 'herd', 'here', 'hide', 'high', 'hike', 'hint', 'hold', 'hole', 'home', 'hope', 'horn', 'hour', 'hunt', 'hurt', 'idea', 'into', 'iron', 'item', 'join', 'joke', 'jump', 'just', 'kept', 'kind', 'king', 'know', 'lack', 'lady', 'lake', 'lamp', 'land', 'lane', 'last', 'late', 'lawn', 'lead', 'leaf', 'leak', 'lean', 'left', 'lend', 'life', 'lift', 'like', 'limb', 'line', 'link', 'lion', 'list', 'live', 'load', 'loan', 'lock', 'lone', 'long', 'lord', 'lose', 'lost', 'love', 'luck', 'made', 'mail', 'main', 'make', 'male', 'many', 'mark', 'mask', 'mate', 'meal', 'mean', 'meat', 'mend', 'mild', 'mile', 'milk', 'mind', 'mine', 'mist', 'mode', 'mold', 'mole', 'more', 'most', 'move', 'much', 'must', 'nail', 'name', 'near', 'neat', 'neck', 'nest', 'news', 'next', 'nice', 'nine', 'north', 'nose', 'note', 'open', 'oral', 'oven', 'over', 'page', 'paid', 'pain', 'pair', 'pale', 'park', 'part', 'past', 'path', 'pave', 'pick', 'pile', 'pine', 'pink', 'pipe', 'plan', 'play', 'plot', 'plug', 'plus', 'poem', 'poet', 'poke', 'pole', 'pond', 'pork', 'port', 'post', 'pure', 'push', 'race', 'rack', 'raft', 'rail', 'rain', 'rake', 'ramp', 'rank', 'rate', 'read', 'real', 'rely', 'rent', 'rest', 'rice', 'rich', 'ride', 'ring', 'rise', 'risk', 'road', 'roam', 'robe', 'rock', 'rode', 'role', 'rope', 'rosy', 'ruin', 'rule', 'rush', 'rust', 'safe', 'said', 'sail', 'sake', 'sale', 'salt', 'same', 'sand', 'sane', 'sang', 'save', 'scab', 'scan', 'scar', 'seal', 'seam', 'seat', 'self', 'send', 'sent', 'ship', 'shot', 'show', 'shut', 'sick', 'side', 'sigh', 'sign', 'silk', 'sing', 'sink', 'site', 'size', 'skin', 'skip', 'slab', 'slam', 'slap', 'sled', 'slid', 'slim', 'slip', 'slot', 'slow', 'snap', 'snow', 'soak', 'soap', 'soft', 'soil', 'sold', 'sole', 'some', 'song', 'sore', 'sort', 'soul', 'soup', 'sour', 'star', 'stay', 'stem', 'step', 'stop', 'such', 'suit', 'sure', 'surf', 'swim', 'tack', 'tail', 'take', 'tale', 'talk', 'tame', 'tank', 'tape', 'task', 'team', 'tear', 'tend', 'tent', 'term', 'text', 'than', 'that', 'them', 'then', 'they', 'thin', 'this', 'tide', 'tidy', 'tile', 'time', 'tiny', 'tire', 'tomb', 'tone', 'took', 'tour', 'town', 'trap', 'tray', 'trim', 'trio', 'trip', 'true', 'tube', 'tune', 'turn', 'twin', 'type', 'unit', 'upon', 'used', 'user', 'vain', 'vast', 'vein', 'vent', 'verb', 'very', 'vest', 'view', 'vote', 'wade', 'wait', 'wake', 'walk', 'wand', 'want', 'ward', 'ware', 'warm', 'warn', 'wash', 'wave', 'weak', 'wear', 'went', 'were', 'west', 'what', 'when', 'wide', 'wife', 'wild', 'wind', 'wine', 'wink', 'wipe', 'wire', 'wise', 'wish', 'with', 'woke', 'wolf', 'word', 'wore', 'work', 'worm', 'worn', 'wrap', 'yard', 'yarn', 'yawn', 'year', 'your'];
-        const intermediateWords = ['aged', 'aunt', 'axis', 'barn', 'bath', 'bind', 'bite', 'blur', 'boil', 'bolt', 'bomb', 'bony', 'brag', 'brew', 'brim', 'buck', 'bulk', 'bury', 'bush', 'bust', 'busy', 'byte', 'cane', 'cape', 'chat', 'chef', 'chew', 'chin', 'chip', 'chop', 'cite', 'clam', 'clan', 'clap', 'claw', 'clay', 'clip', 'clue', 'colt', 'conk', 'cork', 'cozy', 'crab', 'cram', 'crew', 'crib', 'crow', 'cube', 'cult', 'curb', 'cure', 'curl', 'curt', 'curv', 'cute', 'damp', 'dare', 'darn', 'dart', 'dash', 'deaf', 'debt', 'deny', 'dent', 'dial', 'dice', 'diet', 'dime', 'dine', 'disc', 'dive', 'does', 'dole', 'dome', 'dont', 'dose', 'dote', 'drab', 'dram', 'drew', 'drug', 'drum', 'dual', 'duct', 'duel', 'duet', 'duke', 'duly', 'dumb', 'dump', 'dune', 'dunk', 'dusk', 'duty', 'echo', 'edge', 'edit', 'else', 'envy', 'epic', 'even', 'evil', 'exam', 'exit', 'fang', 'fate', 'fawn', 'feat', 'feud', 'fink', 'fist', 'flak', 'flan', 'flap', 'flaw', 'flax', 'flea', 'fled', 'flew', 'flex', 'flip', 'flog', 'flub', 'flux', 'foal', 'foam', 'foci', 'foil', 'folk', 'foul', 'fowl', 'frag', 'fray', 'fume', 'fund', 'funk', 'fury', 'fuse', 'gain', 'gaze', 'gear', 'gnaw', 'grad', 'gram', 'grim', 'grin', 'grip', 'grub', 'gunk', 'guru', 'gust', 'guts', 'hack', 'hail', 'halo', 'halt', 'hark', 'harp', 'haul', 'hawk', 'haze', 'hazy', 'heir', 'hemp', 'herb', 'hero', 'hoax', 'homy', 'honk', 'hose', 'host', 'huge', 'hulk', 'hump', 'hung', 'hurl', 'hush', 'husk', 'hymn', 'hype', 'icon', 'idle', 'idol', 'inch', 'info', 'jail', 'jolt', 'junk', 'jury', 'keys', 'kick', 'kilo', 'kite', 'kiwi', 'knob', 'knot', 'lace', 'laid', 'lair', 'lamb', 'lame', 'lank', 'lard', 'lark', 'lava', 'lazy', 'lens', 'lent', 'lobe', 'loft', 'loin', 'lore', 'lout', 'lows', 'lump', 'lung', 'lure', 'lurk', 'lush', 'lust', 'lynx', 'lyre', 'maid', 'malt', 'mane', 'maps', 'mare', 'mars', 'mast', 'maul', 'maze', 'mead', 'meld', 'melt', 'memo', 'meow', 'mercy', 'mesh', 'mice', 'mime', 'mink', 'mint', 'mire', 'mite', 'moan', 'moat', 'mock', 'molt', 'monk', 'moth', 'muck', 'mule', 'murk', 'muse', 'mush', 'mute', 'myth', 'navy', 'nerd', 'node', 'noisy', 'nope', 'numb', 'oath', 'obey', 'onyx', 'opal', 'ouch', 'oust', 'oval', 'pact', 'pail', 'palm', 'pane', 'pant', 'pawn', 'peak', 'pear', 'pelt', 'perk', 'pest', 'pike', 'pint', 'pity', 'plea', 'plod', 'plop', 'plow', 'plum', 'pram', 'prey', 'prod', 'prom', 'prop', 'prow', 'puck', 'puke', 'pulp', 'puma', 'pump', 'punk', 'punt', 'puny', 'putz', 'quip', 'raft', 'rage', 'raid', 'rand', 'rant', 'rapt', 'rare', 'rash', 'rave', 'raze', 'ream', 'reap', 'redo', 'rife', 'rift', 'rime', 'rink', 'roan', 'roar', 'romp', 'rote', 'rout', 'rove', 'rube', 'ruby', 'rude', 'rump', 'rune', 'rung', 'runt', 'ruse', 'rusk', 'sack', 'scam', 'scat', 'scow', 'scum', 'sect', 'serf', 'shag', 'sham', 'shed', 'shim', 'shod', 'shun', 'silo', 'skew', 'skid', 'skim', 'slag', 'slat', 'slay', 'slew', 'slit', 'slob', 'slog', 'slug', 'slum', 'slur', 'smog', 'smug', 'snag', 'snip', 'snit', 'snob', 'snot', 'snub', 'snug', 'sock', 'soda', 'sofa', 'solo', 'spam', 'span', 'spar', 'spat', 'spay', 'spec', 'spin', 'spit', 'spot', 'spud', 'spur', 'stab', 'stag', 'stew', 'stir', 'stow', 'stub', 'stud', 'stun', 'sued', 'suet', 'sumo', 'sung', 'sunk', 'swab', 'swag', 'swam', 'swan', 'swap', 'swat', 'sway', 'swig', 'swum', 'taco', 'tact', 'tamp', 'taps', 'tare', 'tarp', 'taxi', 'tech', 'thaw', 'thud', 'thug', 'thus', 'tick', 'tier', 'tine', 'ting', 'tint', 'toad', 'tong', 'tony', 'torn', 'tout', 'toys', 'tram', 'trod', 'trot', 'tuck', 'tuna', 'turf', 'tusk', 'twig', 'twit', 'typo', 'ugly', 'unto', 'vamp', 'vane', 'vary', 'veal', 'vend', 'veto', 'vial', 'vibe', 'vice', 'vine', 'visa', 'void', 'volt', 'waif', 'warp', 'wart', 'wary', 'wasp', 'wavy', 'webs', 'weld', 'welt', 'wept', 'whet', 'whey', 'whim', 'whip', 'whit', 'whom', 'wick', 'wile', 'wilt', 'wimp', 'wino', 'wisp', 'wove', 'wren', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'yule', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk'];
-        const proWords = ['quiz', 'jury', 'jump', 'joke', 'jolt', 'junk', 'kiwi', 'knob', 'lynx', 'myth', 'onyx', 'pulp', 'pump', 'quad', 'quip', 'quit', 'quiz', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk', 'flux', 'jinx', 'hymn', 'hype', 'trek', 'whiz', 'foxy', 'jock', 'jowl', 'judo', 'kemp', 'kept', 'perk', 'phew', 'pyx'];
-        
-        // --- DOM Elements ---
+        async function initializeCrazyGamesSDK() {
+            try {
+                if (window.CrazyGames && window.CrazyGames.SDK) {
+                    sdk = await window.CrazyGames.SDK.getInstance();
+                    console.log("CrazyGames SDK initialized successfully");
+                    
+                    // Set up ad event listeners
+                    sdk.addEventListener('adStarted', () => {
+                        console.log('Ad started');
+                        // Pause game if needed
+                    });
+                    
+                    sdk.addEventListener('adFinished', () => {
+                        console.log('Ad finished');
+                        // Resume game if needed
+                    });
+                    
+                    sdk.addEventListener('adError', (error) => {
+                        console.log('Ad error:', error);
+                    });
+                    
+                    // Initialize the game module
+                    if (sdk.game) {
+                        console.log("Game module available");
+                    }
+                } else {
+                    console.warn("CrazyGames SDK not available");
+                }
+            } catch (error) {
+                console.error("Failed to initialize CrazyGames SDK:", error);
+            }
+        }
+
+        function triggerGameplayStart() {
+            if (sdk && sdk.game && !gameplayStarted) {
+                try {
+                    sdk.game.gameplayStart();
+                    gameplayStarted = true;
+                    console.log("Gameplay started");
+                } catch (error) {
+                    console.error("Error starting gameplay:", error);
+                }
+            }
+        }
+
+        function triggerGameplayStop() {
+            if (sdk && sdk.game && gameplayStarted) {
+                try {
+                    sdk.game.gameplayStop();
+                    gameplayStarted = false;
+                    console.log("Gameplay stopped");
+                } catch (error) {
+                    console.error("Error stopping gameplay:", error);
+                }
+            }
+        }
+
+        function triggerHappyTime() {
+            if (sdk && sdk.game) {
+                try {
+                    sdk.game.happytime();
+                    console.log("Happy time triggered");
+                } catch (error) {
+                    console.error("Error triggering happy time:", error);
+                }
+            }
+        }
+
+        function showAd(type = 'midgame') {
+            if (sdk && sdk.ad) {
+                try {
+                    sdk.ad.requestAd(type);
+                    console.log(`Requested ${type} ad`);
+                } catch (error) {
+                    console.error("Error requesting ad:", error);
+                }
+            }
+        }
+
+        // Word Lists
+        const beginnerWords = ['acid', 'also', 'back', 'band', 'bank', 'bare', 'base', 'beam', 'bean', 'bear', 'beat', 'belt', 'bend', 'best', 'bike', 'bird', 'blow', 'blue', 'boat', 'body', 'bold', 'bond', 'bone', 'born', 'both', 'bowl', 'burn', 'cake', 'calm', 'came', 'camp', 'card', 'care', 'case', 'cash', 'cast', 'cave', 'city', 'club', 'coal', 'coat', 'code', 'coin', 'cold', 'come', 'cone', 'copy', 'cord', 'core', 'corn', 'cost', 'dark', 'date', 'dawn', 'deal', 'deck', 'desk', 'dirt', 'dish', 'dock', 'done', 'down', 'drag', 'draw', 'drip', 'drop', 'duck', 'dust', 'earn', 'east', 'easy', 'face', 'fact', 'fade', 'fail', 'fair', 'fake', 'farm', 'fast', 'fear', 'file', 'film', 'find', 'fine', 'fire', 'firm', 'fish', 'five', 'flag', 'flat', 'flow', 'fold', 'font', 'ford', 'fork', 'form', 'four', 'from', 'fuel', 'game', 'gate', 'gave', 'gift', 'give', 'glad', 'glow', 'goal', 'goat', 'gold', 'gone', 'grab', 'gray', 'grid', 'grow', 'gulf', 'hair', 'half', 'hand', 'hang', 'hard', 'harm', 'hate', 'have', 'head', 'heal', 'heap', 'hear', 'heat', 'help', 'herd', 'here', 'hide', 'high', 'hike', 'hint', 'hold', 'hole', 'home', 'hope', 'horn', 'hour', 'hunt', 'hurt', 'idea', 'into', 'iron', 'item', 'join', 'joke', 'jump', 'just', 'kept', 'kind', 'king', 'know', 'lack', 'lady', 'lake', 'lamp', 'land', 'lane', 'last', 'late', 'lawn', 'lead', 'leaf', 'leak', 'lean', 'left', 'lend', 'life', 'lift', 'like', 'limb', 'line', 'link', 'lion', 'list', 'live', 'load', 'loan', 'lock', 'lone', 'long', 'lord', 'lose', 'lost', 'love', 'luck', 'made', 'mail', 'main', 'make', 'male', 'many', 'mark', 'mask', 'mate', 'meal', 'mean', 'meat', 'mend', 'mild', 'mile', 'milk', 'mind', 'mine', 'mist', 'mode', 'mold', 'mole', 'more', 'most', 'move', 'much', 'must', 'nail', 'name', 'near', 'neat', 'neck', 'nest', 'news', 'next', 'nice', 'nine', 'nose', 'note', 'open', 'oral', 'oven', 'over', 'page', 'paid', 'pain', 'pair', 'pale', 'park', 'part', 'past', 'path', 'pave', 'pick', 'pile', 'pine', 'pink', 'pipe', 'plan', 'play', 'plot', 'plug', 'plus', 'poem', 'poet', 'poke', 'pole', 'pond', 'pork', 'port', 'post', 'pure', 'push', 'race', 'rack', 'raft', 'rail', 'rain', 'rake', 'ramp', 'rank', 'rate', 'read', 'real', 'rely', 'rent', 'rest', 'rice', 'rich', 'ride', 'ring', 'rise', 'risk', 'road', 'roam', 'robe', 'rock', 'rode', 'role', 'rope', 'rosy', 'ruin', 'rule', 'rush', 'rust', 'safe', 'said', 'sail', 'sake', 'sale', 'salt', 'same', 'sand', 'sane', 'sang', 'save', 'seat', 'self', 'send', 'sent', 'ship', 'shot', 'show', 'shut', 'sick', 'side', 'sigh', 'sign', 'silk', 'sing', 'sink', 'site', 'size', 'skin', 'skip', 'slow', 'snap', 'snow', 'soak', 'soap', 'soft', 'soil', 'sold', 'sole', 'some', 'song', 'sore', 'sort', 'soul', 'soup', 'sour', 'star', 'stay', 'stem', 'step', 'stop', 'such', 'suit', 'sure', 'surf', 'swim', 'tail', 'take', 'tale', 'talk', 'tame', 'tank', 'tape', 'task', 'team', 'tear', 'tend', 'tent', 'term', 'text', 'than', 'that', 'them', 'then', 'they', 'thin', 'this', 'tide', 'tidy', 'tile', 'time', 'tiny', 'tire', 'tomb', 'tone', 'took', 'tour', 'town', 'trap', 'tray', 'trim', 'trio', 'trip', 'true', 'tube', 'tune', 'turn', 'twin', 'type', 'unit', 'upon', 'used', 'user', 'vain', 'vast', 'vein', 'vent', 'verb', 'very', 'vest', 'view', 'vote', 'wade', 'wait', 'wake', 'walk', 'wand', 'want', 'ward', 'ware', 'warm', 'warn', 'wash', 'wave', 'weak', 'wear', 'went', 'were', 'west', 'what', 'when', 'wide', 'wife', 'wild', 'wind', 'wine', 'wink', 'wipe', 'wire', 'wise', 'wish', 'with', 'woke', 'wolf', 'word', 'wore', 'work', 'worm', 'worn', 'wrap', 'yard', 'yarn', 'yawn', 'year', 'your'];
+        const intermediateWords = ['aged', 'aunt', 'axis', 'barn', 'bath', 'bind', 'bite', 'blur', 'boil', 'bolt', 'bomb', 'bony', 'brag', 'brew', 'brim', 'buck', 'bulk', 'bury', 'bush', 'bust', 'busy', 'byte', 'cane', 'cape', 'chat', 'chef', 'chew', 'chin', 'chip', 'chop', 'cite', 'clam', 'clan', 'clap', 'claw', 'clay', 'clip', 'clue', 'colt', 'conk', 'cork', 'cozy', 'crab', 'cram', 'crew', 'crib', 'crow', 'cube', 'cult', 'curb', 'cure', 'curl', 'curt', 'cute', 'damp', 'dare', 'darn', 'dart', 'dash', 'deaf', 'debt', 'deny', 'dent', 'dial', 'dice', 'diet', 'dime', 'dine', 'disc', 'dive', 'does', 'dole', 'dome', 'dose', 'dote', 'drab', 'dram', 'drew', 'drug', 'drum', 'dual', 'duct', 'duel', 'duet', 'duke', 'duly', 'dumb', 'dump', 'dune', 'dunk', 'dusk', 'duty', 'echo', 'edge', 'edit', 'else', 'envy', 'epic', 'even', 'evil', 'exam', 'exit', 'fang', 'fate', 'fawn', 'feat', 'feud', 'fink', 'fist', 'flak', 'flan', 'flap', 'flaw', 'flax', 'flea', 'fled', 'flew', 'flex', 'flip', 'flog', 'flux', 'foal', 'foam', 'foci', 'foil', 'folk', 'foul', 'fowl', 'frag', 'fray', 'fume', 'fund', 'funk', 'fury', 'fuse', 'gain', 'gaze', 'gear', 'gnaw', 'grad', 'gram', 'grim', 'grin', 'grip', 'grub', 'gunk', 'guru', 'gust', 'guts', 'hack', 'hail', 'halo', 'halt', 'hark', 'harp', 'haul', 'hawk', 'haze', 'hazy', 'heir', 'hemp', 'herb', 'hero', 'hoax', 'homy', 'honk', 'hose', 'host', 'huge', 'hulk', 'hump', 'hung', 'hurl', 'hush', 'husk', 'hymn', 'hype', 'icon', 'idle', 'idol', 'inch', 'info', 'jail', 'jolt', 'junk', 'jury', 'keys', 'kick', 'kilo', 'kite', 'kiwi', 'knob', 'knot', 'lace', 'laid', 'lair', 'lamb', 'lame', 'lank', 'lard', 'lark', 'lava', 'lazy', 'lens', 'lent', 'lobe', 'loft', 'loin', 'lore', 'lout', 'lows', 'lump', 'lung', 'lure', 'lurk', 'lush', 'lust', 'lynx', 'lyre', 'maid', 'malt', 'mane', 'maps', 'mare', 'mars', 'mast', 'maul', 'maze', 'mead', 'meld', 'melt', 'memo', 'meow', 'mesh', 'mice', 'mime', 'mink', 'mint', 'mire', 'mite', 'moan', 'moat', 'mock', 'molt', 'monk', 'moth', 'muck', 'mule', 'murk', 'muse', 'mush', 'mute', 'myth', 'navy', 'nerd', 'node', 'nope', 'numb', 'oath', 'obey', 'onyx', 'opal', 'ouch', 'oust', 'oval', 'pact', 'pail', 'palm', 'pane', 'pant', 'pawn', 'peak', 'pear', 'pelt', 'perk', 'pest', 'pike', 'pint', 'pity', 'plea', 'plod', 'plop', 'plow', 'plum', 'pram', 'prey', 'prod', 'prom', 'prop', 'prow', 'puck', 'puke', 'pulp', 'puma', 'pump', 'punk', 'punt', 'puny', 'putz', 'quip', 'raft', 'rage', 'raid', 'rand', 'rant', 'rapt', 'rare', 'rash', 'rave', 'raze', 'ream', 'reap', 'redo', 'rife', 'rift', 'rime', 'rink', 'roan', 'roar', 'romp', 'rote', 'rout', 'rove', 'rube', 'ruby', 'rude', 'rump', 'rune', 'rung', 'runt', 'ruse', 'rusk', 'sack', 'scam', 'scat', 'scow', 'scum', 'sect', 'serf', 'shag', 'sham', 'shed', 'shim', 'shod', 'shun', 'silo', 'skew', 'skid', 'skim', 'slag', 'slat', 'slay', 'slew', 'slit', 'slob', 'slog', 'slug', 'slum', 'slur', 'smog', 'smug', 'snag', 'snip', 'snit', 'snob', 'snot', 'snub', 'snug', 'sock', 'soda', 'sofa', 'solo', 'spam', 'span', 'spar', 'spat', 'spay', 'spec', 'spin', 'spit', 'spot', 'spud', 'spur', 'stab', 'stag', 'stew', 'stir', 'stow', 'stub', 'stud', 'stun', 'sued', 'suet', 'sumo', 'sung', 'sunk', 'swab', 'swag', 'swam', 'swan', 'swap', 'swat', 'sway', 'swig', 'swum', 'taco', 'tact', 'tamp', 'taps', 'tare', 'tarp', 'taxi', 'tech', 'thaw', 'thud', 'thug', 'thus', 'tick', 'tier', 'tine', 'ting', 'tint', 'toad', 'tong', 'tony', 'torn', 'tout', 'toys', 'tram', 'trod', 'trot', 'tuck', 'tuna', 'turf', 'tusk', 'twig', 'twit', 'typo', 'ugly', 'unto', 'vamp', 'vane', 'vary', 'veal', 'vend', 'veto', 'vial', 'vibe', 'vice', 'vine', 'visa', 'void', 'volt', 'waif', 'warp', 'wart', 'wary', 'wasp', 'wavy', 'webs', 'weld', 'welt', 'wept', 'whet', 'whey', 'whim', 'whip', 'whit', 'whom', 'wick', 'wile', 'wilt', 'wimp', 'wino', 'wisp', 'wove', 'wren', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'yule', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk'];
+        const proWords = ['quiz', 'jury', 'jump', 'joke', 'jolt', 'junk', 'kiwi', 'knob', 'lynx', 'myth', 'onyx', 'pulp', 'pump', 'quad', 'quip', 'quit', 'quiz', 'yacht', 'yank', 'yeti', 'yoke', 'yolk', 'zany', 'zero', 'zest', 'zinc', 'zing', 'zone', 'zonk', 'flux', 'jinx', 'hymn', 'hype', 'trek', 'whiz', 'foxy', 'jock', 'jowl', 'judo'];
+
+        // DOM Elements
         const allScreens = document.querySelectorAll('.screen');
-        const subheadingContainer = document.getElementById('subheadingContainer');
-        const gameStatus = document.getElementById('gameStatus');
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIconLight = document.getElementById('theme-icon-light');
-        const themeIconDark = document.getElementById('theme-icon-dark');
         const startScreen = document.getElementById('startScreen');
-        const startButton = document.getElementById('startButton');
         const modeSelectionScreen = document.getElementById('modeSelectionScreen');
         const difficultySelectionScreen = document.getElementById('difficultySelectionScreen');
         const howToPlayScreen = document.getElementById('howToPlayScreen');
-        const howPointsWorkScreen = document.getElementById('howPointsWorkScreen');
-        const knowMoreScreen = document.getElementById('knowMoreScreen');
         const setWordScreen = document.getElementById('setWordScreen');
         const gameScreen = document.getElementById('gameScreen');
-        const onlineLobbyScreen = document.getElementById('onlineLobbyScreen');
-        const scorecardScreen = document.getElementById('scorecardScreen');
-        const singlePlayerButton = document.getElementById('singlePlayerButton');
-        const twoPlayerButton = document.getElementById('twoPlayerButton');
-        const onlinePlayerButton = document.getElementById('onlinePlayerButton');
-        const howToPlayButton = document.getElementById('howToPlayButton');
-        const howPointsWorkButton = document.getElementById('howPointsWorkButton');
-        const knowMoreButton = document.getElementById('knowMoreButton');
-        const backToMenuFromDiff = document.getElementById('backToMenuFromDiff');
-        const backToMenuFromHelp = document.getElementById('backToMenuFromHelp');
-        const backToMenuFromPoints = document.getElementById('backToMenuFromPoints');
-        const backToMenuFromKnowMore = document.getElementById('backToMenuFromKnowMore');
-        const backToMenuFromSet = document.getElementById('backToMenuFromSet');
-        const startGameButton = document.getElementById('startGameButton');
-        const guessButton = document.getElementById('guessButton');
-        const quitButton = document.getElementById('quitButton');
-        const createOnlineGameButton = document.getElementById('createOnlineGameButton');
-        const joinOnlineGameButton = document.getElementById('joinOnlineGameButton');
-        const copyGameIdButton = document.getElementById('copyGameIdButton');
-        const copyInviteLinkButton = document.getElementById('copyInviteLinkButton');
-        const backToMenuFromOnline = document.getElementById('backToMenuFromOnline');
-        const secretWordInput = document.getElementById('secretWordInput');
-        const guessInput = document.getElementById('guessInput');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const timerDisplay = document.getElementById('timerDisplay');
         const messageArea = document.getElementById('messageArea');
         const mainMessageArea = document.getElementById('mainMessageArea');
         const guessHistory = document.getElementById('guessHistory');
-        const setWordTitle = document.getElementById('setWordTitle');
-        const setWordSubtitle = document.getElementById('setWordSubtitle');
-        const gameIdDisplay = document.getElementById('gameIdDisplay');
-        const gameIdText = document.getElementById('gameIdText');
-        const joinGameIdInput = document.getElementById('joinGameIdInput');
-        const gameControls = document.getElementById('gameControls');
-        const guessControls = document.getElementById('guessControls');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const scoreToBeatDisplay = document.getElementById('scoreToBeatDisplay');
-        const watermarkContainer = document.getElementById('watermarkContainer');
-        // Rematch UI
         const rematchRequestArea = document.getElementById('rematchRequestArea');
-        // Scorecard UI
-        const scorecardTitle = document.getElementById('scorecardTitle');
-        const backToMenuFromScorecard = document.getElementById('backToMenuFromScorecard');
-        // Name Editing UI
-        const p1NameSpan = document.getElementById('player1Name');
-        const p2NameSpan = document.getElementById('player2Name');
-        const editP1NameBtn = document.getElementById('editP1NameBtn');
-        const editP2NameBtn = document.getElementById('editP2NameBtn');
-        const timerDisplay = document.getElementById('timerDisplay');
-        const timerEl = document.getElementById('timer');
-        const muteButton = document.getElementById('muteButton');
-        const unmuteIcon = document.getElementById('unmuteIcon');
-        const muteIcon = document.getElementById('muteIcon');
-        const fullscreenButton = document.getElementById('fullscreenButton');
-        const enterFullscreenIcon = document.getElementById('enterFullscreenIcon');
-        const exitFullscreenIcon = document.getElementById('exitFullscreenIcon');
 
-        
-        // --- Game State & Firebase ---
-        let db, auth, userId;
+        // Game State
         let secretWord = '';
         let gameOver = false;
-        let gameMode = null; 
+        let gameMode = null;
         let attemptCount = 0;
-        let onlineGameUnsubscribe = null;
-        let currentOnlineGameId = null;
-        let currentOnlineGameData = null; 
         let localGuessHistory = [];
         let timerInterval;
-        // Local 2P State
         let player1LocalScore = 0, player2LocalScore = 0, localGamesPlayed = 0, currentPlayerSetter = 1;
         let player1LocalName = 'Player 1', player2LocalName = 'Player 2';
         let scoreToBeat = 0;
         let roundLost = false;
-        let p1Streak = 0, p2Streak = 0;
-        
-        // --- Firebase Config & Init ---
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        
-        async function initializeFirebase() {
+
+        // Audio
+        let soundsReady = false;
+        const sounds = {};
+
+        // Initialize audio context on first user interaction
+        document.body.addEventListener('click', async () => {
+            if (!soundsReady) {
+                try {
+                    await Tone.start();
+                    console.log('Audio context started');
+                    
+                    // Initialize sound effects
+                    sounds.click = new Tone.Synth({ 
+                        oscillator: { type: 'sine' }, 
+                        envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } 
+                    }).toDestination();
+                    
+                    sounds.ding = new Tone.MetalSynth({ 
+                        frequency: 300, 
+                        envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
+                        harmonicity: 3.1, 
+                        modulationIndex: 16, 
+                        resonance: 4000, 
+                        octaves: 1.5 
+                    }).toDestination();
+                    
+                    sounds.win = new Tone.PolySynth(Tone.Synth, { 
+                        oscillator: { type: "sine" }, 
+                        envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 } 
+                    }).toDestination();
+                    
+                    sounds.lose = new Tone.Synth({ 
+                        oscillator: { type: 'triangle' }, 
+                        envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.1 } 
+                    }).toDestination();
+                    
+                    soundsReady = true;
+                } catch (error) {
+                    console.error('Audio initialization failed:', error);
+                }
+            }
+        }, { once: true });
+
+        function playSound(sound) {
+            if (!soundsReady || Tone.Destination.mute) return;
             try {
-                let firebaseConfig;
-                if (typeof __firebase_config !== 'undefined' && __firebase_config !== '{}') {
-                    firebaseConfig = JSON.parse(__firebase_config);
-                } else {
-                     const deployedFirebaseConfig = {
-     apiKey: "AIzaSyDEChwcDmmrXw_UZgWaDAU8iShFSbBv-l8",
-     authDomain: "cryptic-quad.firebaseapp.com",
-     projectId: "cryptic-quad",
-     storageBucket: "cryptic-quad.firebasestorage.app",
-     messagingSenderId: "301044450306",
-     appId: "1:301044450306:web:6fdf7e794677969734531b"
-    };
-                    if (deployedFirebaseConfig.apiKey.startsWith("PASTE_")) {
-                         throw new Error("Firebase configuration is missing for deployment.");
-                    }
-                    firebaseConfig = deployedFirebaseConfig;
+                switch(sound) {
+                    case 'click':
+                        sounds.click?.triggerAttackRelease('C5', '8n');
+                        break;
+                    case 'ding':
+                        sounds.ding?.triggerAttackRelease('C5', '8n');
+                        break;
+                    case 'win':
+                        sounds.win?.triggerAttackRelease(['C5', 'E5', 'G5'], '8n');
+                        break;
+                    case 'lose':
+                        sounds.lose?.triggerAttackRelease('C3', '4n');
+                        break;
                 }
-
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                userId = auth.currentUser.uid;
-                console.log("Firebase initialized and user signed in:", userId);
             } catch (error) {
-                console.error("Firebase initialization failed:", error);
-                showMainMessage("Could not connect to online services. Online mode is disabled.", "error");
-                onlinePlayerButton.disabled = true;
-                onlinePlayerButton.classList.add('opacity-50', 'cursor-not-allowed');
+                console.error('Sound playback failed:', error);
             }
         }
 
-        // --- UI & Helper Functions ---
+        // Utility Functions
         function showScreen(screenToShow) {
             allScreens.forEach(screen => screen.classList.add('hidden'));
             screenToShow.classList.remove('hidden');
             screenToShow.classList.add('screen');
         }
-        
+
         function showMessage(text, type = 'info', area = messageArea) {
             area.textContent = text;
-            area.className = `text-center min-h-[2.5rem] mt-4 mb-4 font-medium text-lg flex items-center justify-center p-2 rounded-lg message-${type}`;
+            area.className = `text-center min-h-10 mt-4 mb-4 font-medium text-lg flex items-center justify-center p-2 rounded-lg message-${type}`;
             area.classList.remove('hidden');
         }
 
@@ -586,9 +673,9 @@
             if (hasConsecutiveDuplicates(word)) {
                 return "Word cannot have consecutive identical letters (e.g., 'tree').";
             }
-            return null; // No error
+            return null;
         }
-        
+
         function initializeGameUI(resetSecret = true, difficulty = 'beginner') {
             gameOver = false;
             roundLost = false;
@@ -597,59 +684,79 @@
             localGuessHistory = [];
             messageArea.classList.add('hidden');
             rematchRequestArea.classList.add('hidden');
-            gameControls.classList.remove('hidden');
-            guessControls.classList.remove('hidden');
-            guessInput.value = '';
-            secretWordInput.value = '';
-            guessInput.disabled = false;
-            guessButton.disabled = false;
+            document.getElementById('gameControls').classList.remove('hidden');
+            document.getElementById('guessControls').classList.remove('hidden');
+            document.getElementById('guessInput').value = '';
+            document.getElementById('secretWordInput').value = '';
+            document.getElementById('guessInput').disabled = false;
+            document.getElementById('guessButton').disabled = false;
             
-            if (gameMode !== 'twoPlayerOnline') {
-                 scoreDisplay.classList.add('hidden'); 
-            }
-            
-            scoreToBeatDisplay.classList.add('hidden');
+            scoreDisplay.classList.add('hidden');
+            document.getElementById('scoreToBeatDisplay').classList.add('hidden');
             timerDisplay.classList.add('hidden');
             if(timerInterval) clearInterval(timerInterval);
-
-            
-            if (gameMode === 'twoPlayerOnline') {
-                quitButton.textContent = 'Quit & Reveal';
-            } else { // single and local
-                quitButton.textContent = 'Quit & Reveal';
-            }
             
             if (resetSecret && gameMode === 'single') {
                 secretWord = getSecretWord(difficulty);
                 startTimer();
             }
             showScreen(gameScreen);
-            guessInput.focus();
+            document.getElementById('guessInput').focus();
         }
-        
-        async function endMatch(wasQuit = false) {
-            if (gameMode === 'twoPlayerLocal') {
-                showLocalScorecard();
-            } else if (currentOnlineGameId) {
-                const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-                const updateData = { gameState: 'score_summary' };
-                if (wasQuit) {
-                    updateData.quitter = userId;
-                }
-                await updateDoc(gameRef, updateData);
+
+        function startTimer() {
+            let seconds = 0;
+            timerDisplay.classList.remove('hidden');
+            document.getElementById('timer').textContent = '0s';
+            timerInterval = setInterval(() => {
+                seconds++;
+                document.getElementById('timer').textContent = `${seconds}s`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function updateHistory(guesses) {
+            guessHistory.innerHTML = '';
+            guesses.forEach((item, index) => {
+                const { guess, cows, bulls } = item;
+                const historyItem = document.createElement('div');
+                historyItem.className = 'grid grid-cols-4 gap-2 text-center p-2 text-gray-800 dark:text-gray-200 history-row';
+                historyItem.innerHTML = `
+                    <div class="font-bold text-lg text-gray-500 dark:text-gray-400">${index + 1}</div>
+                    <div class="font-mono text-lg tracking-widest">${guess.toUpperCase()}</div>
+                    <div class="font-bold text-lg">${cows}</div>
+                    <div class="font-bold text-lg">${bulls}</div>`;
+                guessHistory.appendChild(historyItem);
+            });
+            if(guessHistory.lastChild) {
+                guessHistory.lastChild.scrollIntoView({ behavior: 'smooth' });
             }
         }
-        
-        function copyToClipboard(text, successMessage = 'Copied to clipboard!') {
-            navigator.clipboard.writeText(text).then(() => {
-                showMainMessage(successMessage, 'success');
-            }).catch(err => {
-                console.error("Copy failed:", err);
-                showMainMessage('Copy failed. Please copy manually.', 'error');
-            });
+
+        function triggerConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#a855f7', '#6366f1', '#10b981', '#f59e0b', '#ef4444'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animation = `fall ${2 + Math.random() * 2}s ${Math.random()}s linear forwards`;
+                container.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 4000);
+            }
         }
-        
-        // --- Local 2-Player Logic ---
+
+        function goToMainMenu() {
+            triggerGameplayStop();
+            showAd('midgame');
+            showScreen(modeSelectionScreen);
+        }
+
+        // Local 2-Player Logic
         function startLocalMatch() {
             gameMode = 'twoPlayerLocal';
             player1LocalScore = 0;
@@ -658,21 +765,19 @@
             currentPlayerSetter = 1;
             player1LocalName = 'Player 1';
             player2LocalName = 'Player 2';
-            p1Streak = 0;
-            p2Streak = 0;
             scoreToBeat = 0;
             promptSetLocalWord();
         }
-        
+
         function promptSetLocalWord() {
-            setWordTitle.textContent = `${currentPlayerSetter === 1 ? player1LocalName : player2LocalName}: Set the Word`;
-            setWordSubtitle.textContent = `${currentPlayerSetter === 1 ? player2LocalName : player1LocalName}, look away!`;
-            backToMenuFromSet.classList.toggle('hidden', localGamesPlayed > 0 || scoreToBeat > 0);
+            document.getElementById('setWordTitle').textContent = `${currentPlayerSetter === 1 ? player1LocalName : player2LocalName}: Set the Word`;
+            document.getElementById('setWordSubtitle').textContent = `${currentPlayerSetter === 1 ? player2LocalName : player1LocalName}, look away!`;
+            document.getElementById('backToMenuFromSet').classList.toggle('hidden', localGamesPlayed > 0 || scoreToBeat > 0);
             showScreen(setWordScreen);
         }
 
         function startLocalGame() {
-            secretWord = secretWordInput.value.toLowerCase();
+            secretWord = document.getElementById('secretWordInput').value.toLowerCase();
             const validationError = validateWord(secretWord);
             if (validationError) { 
                 showMessage(validationError, 'error', document.getElementById('setWordMessageArea')); 
@@ -683,499 +788,92 @@
         }
 
         function updateLocalScoreDisplay() {
-            p1NameSpan.textContent = `${player1LocalName} ${p1Streak > 1 ? `🔥${p1Streak}` : ''}`;
-            p2NameSpan.textContent = `${player2LocalName} ${p2Streak > 1 ? `🔥${p2Streak}` : ''}`;
+            document.getElementById('player1Name').textContent = player1LocalName;
+            document.getElementById('player2Name').textContent = player2LocalName;
             document.getElementById('player1Score').textContent = player1LocalScore;
             document.getElementById('player2Score').textContent = player2LocalScore;
             scoreDisplay.classList.remove('hidden');
 
             if (scoreToBeat > 0) {
-                scoreToBeatDisplay.textContent = `Score to Beat: ${scoreToBeat} attempts`;
-                scoreToBeatDisplay.classList.remove('hidden');
+                document.getElementById('scoreToBeatDisplay').textContent = `Score to Beat: ${scoreToBeat} attempts`;
+                document.getElementById('scoreToBeatDisplay').classList.remove('hidden');
             }
         }
-        
+
         function startLocalRematch() {
             currentPlayerSetter = currentPlayerSetter === 1 ? 2 : 1;
             promptSetLocalWord();
         }
 
-        function showLocalScorecard() {
-            scorecardTitle.textContent = "Match Over!";
-            document.getElementById('totalGames').textContent = localGamesPlayed;
-            document.getElementById('scorePlayer1Name').textContent = player1LocalName;
-            document.getElementById('scorePlayer2Name').textContent = player2LocalName;
-            document.getElementById('scorePlayer1').textContent = player1LocalScore;
-            document.getElementById('scorePlayer2').textContent = player2LocalScore;
-            showScreen(scorecardScreen);
-        }
-
-        // --- Online Multiplayer Logic ---
-        async function createOnlineGame() {
-            if (!userId) { showMainMessage("You must be logged in.", "error"); return; }
-            currentOnlineGameId = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-            try {
-                await setDoc(gameRef, { 
-                    player1: userId, player2: null, 
-                    player1_original: userId, player2_original: null, 
-                    p1_name: 'Player 1', p2_name: 'Player 2',
-                    p1_streak: 0, p2_streak: 0,
-                    secretWord: null, guesses: [], 
-                    gameState: 'waiting_for_player', winner: null, 
-                    createdAt: serverTimestamp(),
-                    player1_score: 0, player2_score: 0, total_games_played: 0,
-                    rematch_requester: null,
-                    quitter: null,
-                    score_to_beat: 0
-                });
-                gameIdText.textContent = currentOnlineGameId;
-                gameIdDisplay.classList.remove('hidden');
-                joinGameIdInput.disabled = true;
-                joinOnlineGameButton.disabled = true;
-                createOnlineGameButton.disabled = true;
-                listenToGameUpdates(currentOnlineGameId);
-
-                if (sdk) {
-                    sdk.game.showInviteButton({ lobbyId: currentOnlineGameId });
-                }
-            } catch (error) { console.error("Error creating game:", error); showMainMessage("Failed to create online game.", "error"); }
-        }
-
-        async function joinOnlineGame() {
-            if (!userId) { showMainMessage("You must be logged in.", "error"); return; }
-            const gameId = joinGameIdInput.value.trim().toUpperCase();
-            if (!gameId) { showMainMessage("Please enter a Game ID.", "error"); return; }
-        
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, gameId);
-            try {
-                const gameDoc = await getDoc(gameRef);
-                if (!gameDoc.exists()) { showMainMessage("No game found with that ID.", "error"); return; }
-                const gameData = gameDoc.data();
-                if (gameData.player1 === userId) { showMainMessage("You cannot join your own game.", "error"); return; }
-                if (gameData.player2 !== null) { showMainMessage("This game is already full.", "error"); return; }
-                if (gameData.gameState !== 'waiting_for_player') { showMainMessage("This game is not available to join right now.", "error"); return; }
-        
-                currentOnlineGameId = gameId;
-                await updateDoc(gameRef, { player2: userId, player2_original: userId, gameState: 'waiting_for_word' });
-                listenToGameUpdates(currentOnlineGameId);
-            } catch (error) {
-                console.error("Error joining game:", error);
-                showMainMessage("An error occurred while trying to join the game.", "error");
-            }
-        }
-
-        function listenToGameUpdates(gameId) {
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, gameId);
-            onlineGameUnsubscribe = onSnapshot(gameRef, (doc) => { 
-                if (!doc.exists()) {
-                    goToMainMenu();
-                    showMainMessage("The game session has ended.", "info");
-                    return;
-                }
-                currentOnlineGameData = doc.data();
-                handleGameStateChange(currentOnlineGameData); 
-            });
-        }
-        
-        function handleGameStateChange(gameData) {
-            if (!gameData) return;
-            
-            subheadingContainer.classList.add('hidden');
-            gameStatus.classList.remove('hidden');
-
-            const isPlayer1Current = gameData.player1 === userId; // Current word setter
-            const isPlayer2Current = gameData.player2 === userId; // Current guesser
-            const isUserOriginalPlayer1 = gameData.player1_original === userId;
-
-            if (gameData.player2_original) {
-                p1NameSpan.textContent = `${gameData.p1_name} ${gameData.p1_streak > 1 ? `🔥${gameData.p1_streak}` : ''}`;
-                p2NameSpan.textContent = `${gameData.p2_name} ${gameData.p2_streak > 1 ? `🔥${gameData.p2_streak}` : ''}`;
-                document.getElementById('player1Score').textContent = gameData.player1_score;
-                document.getElementById('player2Score').textContent = gameData.player2_score;
-                
-                const canEditP1 = isUserOriginalPlayer1;
-                const canEditP2 = !isUserOriginalPlayer1;
-
-                editP1NameBtn.disabled = !canEditP1;
-                editP1NameBtn.classList.toggle('opacity-25', !canEditP1);
-                editP1NameBtn.classList.toggle('cursor-not-allowed', !canEditP1);
-
-                editP2NameBtn.disabled = !canEditP2;
-                editP2NameBtn.classList.toggle('opacity-25', !canEditP2);
-                editP2NameBtn.classList.toggle('cursor-not-allowed', !canEditP2);
-            } else {
-                scoreDisplay.classList.add('hidden');
-            }
-
-            if (gameData.score_to_beat > 0) {
-                scoreToBeatDisplay.textContent = `Score to Beat: ${gameData.score_to_beat} attempts`;
-                scoreToBeatDisplay.classList.remove('hidden');
-            } else {
-                scoreToBeatDisplay.classList.add('hidden');
-            }
-
-            switch (gameData.gameState) {
-                case 'waiting_for_player':
-                    gameStatus.textContent = `Game ID: ${currentOnlineGameId}. Waiting for friend...`;
-                    break;
-                case 'waiting_for_word':
-                    backToMenuFromSet.classList.add('hidden');
-                    scoreDisplay.classList.remove('hidden');
-                    if (isPlayer1Current) {
-                        setWordTitle.textContent = "Your turn to set the word";
-                        setWordSubtitle.textContent = "Enter the word for your opponent to guess.";
-                        startGameButton.onclick = () => setOnlineSecretWord();
-                        showScreen(setWordScreen);
-                    } else if (isPlayer2Current) {
-                        gameStatus.textContent = "Waiting for opponent to set the secret word...";
-                        initializeGameUI(false);
-                        guessControls.classList.add('hidden');
-                    }
-                    break;
-                case 'player2_turn':
-                    initializeGameUI(false);
-                    if (isPlayer2Current) {
-                        secretWord = gameData.secretWord;
-                        gameStatus.textContent = "Your turn to guess!";
-                        guessControls.classList.remove('hidden');
-                        guessButton.onclick = () => handleOnlineGuess(gameData);
-
-                        if(gameData.winner && !roundLost) {
-                           roundLost = true;
-                           showMessage("You've lost the point for this round, but you can keep guessing!", "warning");
-                           playSound('lose');
-                        }
-
-                    } else if (isPlayer1Current) {
-                        gameStatus.textContent = "Waiting for your opponent's guess...";
-                        guessControls.classList.add('hidden');
-                    }
-                    updateHistory(gameData.guesses);
-                    break;
-                case 'game_over':
-                    gameOver = true;
-                    secretWord = gameData.secretWord;
-                    initializeGameUI(false);
-                    updateHistory(gameData.guesses);
-                    guessControls.classList.add('hidden');
-                    gameControls.classList.add('hidden');
-
-                    let endMessage;
-                    if (gameData.total_games_played === 0 && gameData.score_to_beat > 0) {
-                        const guesserName = (gameData.winner === gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
-                        const setterName = (gameData.winner !== gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
-                        if (userId === gameData.winner) { 
-                           endMessage = `You guessed it in ${gameData.score_to_beat} attempts! Waiting for ${setterName} to play.`;
-                           playSound('win');
-                           triggerConfetti();
-                        } else {
-                           endMessage = `${guesserName} guessed it in ${gameData.score_to_beat} attempts! You must now beat this score.`;
-                           playSound('lose');
-                        }
-                    } else if (gameData.winner === 'tie') {
-                        endMessage = `It's a tie! Both players get a point. The word was "${secretWord}".`;
-                        playSound('win');
-                        triggerConfetti();
-                    } else {
-                        const winnerIsYou = gameData.winner === userId;
-                        const winnerName = (gameData.winner === gameData.player1_original) ? gameData.p1_name : gameData.p2_name;
-                        endMessage = `${winnerName} wins the round! The word was "${secretWord}".`;
-                        if(winnerIsYou) {
-                             playSound('win');
-                             triggerConfetti();
-                        } else {
-                            playSound('lose');
-                        }
-                    }
-                    showMessage(endMessage, 'success');
-                    
-                    rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
-                        <button id="playAgainButton" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg">Play Again</button>
-                        <button id="quitMatchButton" class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg">End Match</button>
-                    </div>`;
-                    rematchRequestArea.classList.remove('hidden');
-                    document.getElementById('playAgainButton').onclick = requestRematch;
-                    document.getElementById('quitMatchButton').onclick = () => endMatch(true);
-                    break;
-                case 'rematch_requested':
-                    handleRematchRequest(gameData);
-                    break;
-                case 'score_summary':
-                    showScorecard(gameData);
-                    break;
-            }
-        }
-
-        function handleRematchRequest(gameData) {
-            rematchRequestArea.classList.remove('hidden');
-            const requesterIsYou = gameData.rematch_requester === userId;
-            if(requesterIsYou) {
-                rematchRequestArea.innerHTML = `<p class="font-semibold mb-3">Rematch request sent. Waiting for response...</p>`;
-            } else {
-                rematchRequestArea.innerHTML = `<p class="font-semibold mb-3">Opponent wants to play again!</p>
-                <div class="flex justify-center gap-4">
-                     <button id="acceptRematchButton" class="bg-gradient-to-br from-green-600 to-emerald-600 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg">Accept</button>
-                     <button id="declineRematchButton" class="bg-gradient-to-br from-red-600 to-rose-600 text-white font-bold py-2 px-5 rounded-lg hover:shadow-lg">Decline</button>
-                </div>`;
-                document.getElementById('acceptRematchButton').onclick = acceptRematch;
-                document.getElementById('declineRematchButton').onclick = () => endMatch(false);
-            }
-        }
-
-        async function requestRematch() {
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-            await updateDoc(gameRef, { gameState: 'rematch_requested', rematch_requester: userId });
-        }
-
-        async function acceptRematch() {
-            const gameData = currentOnlineGameData;
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-            await updateDoc(gameRef, {
-                player1: gameData.player2,
-                player2: gameData.player1,
-                secretWord: null, guesses: [], winner: null,
-                rematch_requester: null, gameState: 'waiting_for_word'
-            });
-        }
-        
-        async function setOnlineSecretWord() {
-            const word = secretWordInput.value.toLowerCase();
-            const validationError = validateWord(word);
-            if (validationError) { 
-                showMessage(validationError, 'error', document.getElementById('setWordMessageArea')); 
-                return; 
-            }
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-            await updateDoc(gameRef, { secretWord: word, gameState: 'player2_turn' });
-        }
-
-        async function handleOnlineGuess(gameData) {
-            if (gameOver) return;
-            const guess = guessInput.value.toLowerCase();
-            if (validateWord(guess)) { showMessage(validateWord(guess), 'error'); return; }
-            let cows = 0, bulls = 0;
-            const secretLetters = gameData.secretWord.split(''); const guessLetters = guess.split('');
-            for (let i = 0; i < 4; i++) { if (guessLetters[i] === secretLetters[i]) { cows++; secretLetters[i] = null; guessLetters[i] = null; } }
-            for(let i = 0; i < 4; i++){ if(guessLetters[i] === null) continue; const bullIndex = secretLetters.indexOf(guessLetters[i]); if(bullIndex !== -1) { bulls++; secretLetters[bullIndex] = null; } }
-            const newGuess = { guess, cows, bulls };
-            const updatedGuesses = [...gameData.guesses, newGuess];
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-            const currentAttempt = updatedGuesses.length;
-            
-            let updatePayload = { guesses: updatedGuesses };
-
-            if(gameData.score_to_beat > 0 && currentAttempt > gameData.score_to_beat && !gameData.winner) {
-                updatePayload.winner = gameData.player1;
-                const winnerIsP1Original = gameData.player1 === gameData.player1_original;
-                const scoreField = winnerIsP1Original ? 'player1_score' : 'player2_score';
-                updatePayload[scoreField] = increment(1);
-                 updatePayload.p1_streak = winnerIsP1Original ? increment(1) : 0;
-                 updatePayload.p2_streak = !winnerIsP1Original ? increment(1) : 0;
-            }
-
-            if (cows === 4) {
-                if (sdk) sdk.game.happytime();
-                updatePayload.gameState = 'game_over';
-                
-                if (gameData.score_to_beat === 0) { 
-                    updatePayload.winner = userId; 
-                    updatePayload.score_to_beat = currentAttempt;
-                } else { 
-                    updatePayload.total_games_played = increment(1);
-                    if(gameData.winner) { 
-                        // Point was already decided
-                    } else if (currentAttempt < gameData.score_to_beat) {
-                        updatePayload.winner = userId; 
-                        const winnerIsP1Original = userId === gameData.player1_original;
-                        const scoreField = winnerIsP1Original ? 'player1_score' : 'player2_score';
-                        updatePayload[scoreField] = increment(1);
-                        updatePayload.p1_streak = winnerIsP1Original ? increment(1) : 0;
-                        updatePayload.p2_streak = !winnerIsP1Original ? increment(1) : 0;
-                    } else if (currentAttempt === gameData.score_to_beat) {
-                        updatePayload.winner = 'tie'; 
-                        updatePayload.player1_score = increment(1);
-                        updatePayload.player2_score = increment(1);
-                        updatePayload.p1_streak = 0;
-                        updatePayload.p2_streak = 0;
-                    } else { 
-                        updatePayload.winner = gameData.player1; 
-                        const winnerIsP1Original = gameData.player1 === gameData.player1_original;
-                        const scoreField = winnerIsP1Original ? 'player1_score' : 'player2_score';
-                        updatePayload[scoreField] = increment(1);
-                         updatePayload.p1_streak = winnerIsP1Original ? increment(1) : 0;
-                        updatePayload.p2_streak = !winnerIsP1Original ? increment(1) : 0;
-                    }
-                    updatePayload.score_to_beat = 0; 
-                }
-            }
-
-            await updateDoc(gameRef, updatePayload);
-            guessInput.value = '';
-            guessInput.focus();
-        }
-
-        async function updateOnlineName(name) {
-            if(!currentOnlineGameId || !currentOnlineGameData) return;
-            const isUserOriginalPlayer1 = currentOnlineGameData.player1_original === userId;
-            const fieldToUpdate = isUserOriginalPlayer1 ? 'p1_name' : 'p2_name';
-            const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-            await updateDoc(gameRef, { [fieldToUpdate]: name });
-        }
-
-        function showScorecard(gameData) {
-            if (gameData.quitter && gameData.quitter !== userId) {
-                 scorecardTitle.textContent = "Opponent Left";
-            } else {
-                 scorecardTitle.textContent = "Match Over!";
-            }
-
-            document.getElementById('totalGames').textContent = gameData.total_games_played;
-            document.getElementById('scorePlayer1Name').textContent = gameData.p1_name;
-            document.getElementById('scorePlayer2Name').textContent = gameData.p2_name;
-            document.getElementById('scorePlayer1').textContent = gameData.player1_score;
-            document.getElementById('scorePlayer2').textContent = gameData.player2_score;
-            showScreen(scorecardScreen);
-        }
-
-        function updateHistory(guesses) {
-            guessHistory.innerHTML = ''; // always clear
-            guesses.forEach((item, index) => { // add index
-                const { guess, cows, bulls } = item;
-                const historyItem = document.createElement('div');
-                historyItem.className = 'grid grid-cols-4 gap-2 text-center p-2 text-slate-800 dark:text-slate-200 history-row';
-                historyItem.innerHTML = `
-                    <div class="font-bold text-lg text-slate-500 dark:text-slate-400">${index + 1}</div>
-                    <div class="font-mono text-lg tracking-widest">${guess.toUpperCase()}</div>
-                    <div class="font-bold text-lg">${cows}</div>
-                    <div class="font-bold text-lg">${bulls}</div>`;
-                guessHistory.appendChild(historyItem);
-            });
-            if(guessHistory.lastChild) guessHistory.lastChild.scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function goToMainMenu() {
-            if (sdk) {
-                sdk.game.gameplayStop();
-                console.log("CrazyGames SDK gameplayStop() called.");
-                sdk.game.hideInviteButton();
-                sdk.ad.requestAd('midgame');
-            }
-
-            if (onlineGameUnsubscribe) { onlineGameUnsubscribe(); onlineGameUnsubscribe = null; }
-            currentOnlineGameId = null;
-            gameIdDisplay.classList.add('hidden');
-            joinGameIdInput.disabled = false;
-            joinGameIdInput.value = '';
-            joinOnlineGameButton.disabled = false;
-            createOnlineGameButton.disabled = false;
-            subheadingContainer.classList.remove('hidden');
-            gameStatus.classList.add('hidden');
-            backToMenuFromSet.classList.remove('hidden');
-            watermarkContainer.classList.remove('hidden');
-            showScreen(modeSelectionScreen);
-        }
-        
+        // Event Listeners
         function setupEventListeners() {
-            startButton.addEventListener('click', () => {
-                if (sdk && !gameplayHasStarted) {
-                    sdk.game.gameplayStart();
-                    gameplayHasStarted = true;
-                    console.log("CrazyGames SDK gameplayStart() called.");
-                }
-                playSound('click');
-                showScreen(modeSelectionScreen);
-            });
-            
-            themeToggleBtn.addEventListener('click', () => {
+            // Theme toggle
+            document.getElementById('theme-toggle').addEventListener('click', () => {
                 playSound('click');
                 document.documentElement.classList.toggle('dark');
-                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+                const theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+                try {
+                    localStorage.setItem('theme', theme);
+                } catch (e) {
+                    console.warn('localStorage not available');
+                }
                 updateThemeIcons();
             });
 
-            muteButton.addEventListener('click', () => {
-                Tone.Destination.mute = !Tone.Destination.mute;
-                localStorage.setItem('muted', Tone.Destination.mute);
-                updateMuteIcons();
-            });
-
-            fullscreenButton.addEventListener('click', () => {
-                playSound('click');
-                toggleFullscreen();
-            });
-
-            document.addEventListener('fullscreenchange', () => {
-                updateFullscreenIcons();
-            });
-
-            function updateThemeIcons() {
-                if (document.documentElement.classList.contains('dark')) {
-                    themeIconLight.classList.add('hidden');
-                    themeIconDark.classList.remove('hidden');
-                } else {
-                    themeIconLight.classList.remove('hidden');
-                    themeIconDark.classList.add('hidden');
-                }
-            }
-
-             function updateMuteIcons() {
-                const isMuted = Tone.Destination.mute;
-                unmuteIcon.classList.toggle('hidden', isMuted);
-                muteIcon.classList.toggle('hidden', !isMuted);
-            }
-
-            function updateFullscreenIcons() {
-                const isFullscreen = !!document.fullscreenElement;
-                enterFullscreenIcon.classList.toggle('hidden', isFullscreen);
-                exitFullscreenIcon.classList.toggle('hidden', !isFullscreen);
-            }
-
-            function toggleFullscreen() {
-                if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(err => {
-                        alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                    });
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
+            // Mute toggle
+            document.getElementById('muteButton').addEventListener('click', () => {
+                if (Tone.Destination) {
+                    Tone.Destination.mute = !Tone.Destination.mute;
+                    try {
+                        localStorage.setItem('muted', Tone.Destination.mute);
+                    } catch (e) {
+                        console.warn('localStorage not available');
                     }
+                    updateMuteIcons();
                 }
-            }
+            });
 
-            // Initial call
-            updateThemeIcons();
-            updateMuteIcons();
-            updateFullscreenIcons();
+            // Start button
+            document.getElementById('startButton').addEventListener('click', () => {
+                triggerGameplayStart();
+                playSound('click');
+                showScreen(modeSelectionScreen);
+            });
 
-            // Menu Buttons
-            singlePlayerButton.addEventListener('click', () => { 
+            // Mode selection
+            document.getElementById('singlePlayerButton').addEventListener('click', () => { 
                 gameMode = 'single'; 
                 playSound('click'); 
                 showScreen(difficultySelectionScreen); 
             });
-            twoPlayerButton.addEventListener('click', () => { 
+
+            document.getElementById('twoPlayerButton').addEventListener('click', () => { 
                 playSound('click'); 
                 startLocalMatch(); 
             });
-            onlinePlayerButton.addEventListener('click', () => { 
-                gameMode = 'twoPlayerOnline'; 
+
+            document.getElementById('howToPlayButton').addEventListener('click', () => { 
                 playSound('click'); 
-                showScreen(onlineLobbyScreen); 
+                showScreen(howToPlayScreen); 
             });
-            howToPlayButton.addEventListener('click', () => { playSound('click'); showScreen(howToPlayScreen); });
-            howPointsWorkButton.addEventListener('click', () => { playSound('click'); showScreen(howPointsWorkScreen); });
-            knowMoreButton.addEventListener('click', () => { playSound('click'); showScreen(knowMoreScreen); });
 
-            // Back Buttons
-            backToMenuFromDiff.addEventListener('click',() => { playSound('click'); goToMainMenu(); });
-            backToMenuFromHelp.addEventListener('click',() => { playSound('click'); goToMainMenu(); });
-            backToMenuFromPoints.addEventListener('click',() => { playSound('click'); goToMainMenu(); });
-            backToMenuFromKnowMore.addEventListener('click',() => { playSound('click'); goToMainMenu(); });
-            backToMenuFromSet.addEventListener('click',() => { playSound('click'); goToMainMenu(); });
-            backToMenuFromOnline.addEventListener('click',() => { playSound('click'); goToMainMenu(); });
-            backToMenuFromScorecard.addEventListener('click',() => { playSound('click'); goToMainMenu(); });
+            // Back buttons
+            document.getElementById('backToMenuFromDiff').addEventListener('click', () => { 
+                playSound('click'); 
+                goToMainMenu(); 
+            });
 
+            document.getElementById('backToMenuFromHelp').addEventListener('click', () => { 
+                playSound('click'); 
+                goToMainMenu(); 
+            });
+
+            document.getElementById('backToMenuFromSet').addEventListener('click', () => { 
+                playSound('click'); 
+                goToMainMenu(); 
+            });
+
+            // Difficulty selection
             document.querySelectorAll('.difficulty-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     playSound('click');
@@ -1183,395 +881,256 @@
                 });
             });
 
-            startGameButton.addEventListener('click', () => {
+            // Game controls
+            document.getElementById('startGameButton').addEventListener('click', () => {
                 playSound('click');
                 if (gameMode === 'twoPlayerLocal') {
                     startLocalGame();
                 }
             });
 
-            guessButton.addEventListener('click', () => {
-                if (gameMode === 'single' || gameMode === 'twoPlayerLocal') {
-                    if (gameOver && roundLost) { 
-                       // Continue guessing logic handled in the main block
-                    } else if (gameOver) {
-                        return;
-                    }
-                    
-                    const guess = guessInput.value.toLowerCase();
-                    const validationError = validateWord(guess);
-                    if (validationError) { showMessage(validationError, 'error'); return; }
-                    
-                    attemptCount++; 
-                    let cows = 0; 
-                    let bulls = 0;
-                    const secretLetters = secretWord.split(''); const guessLetters = guess.split('');
-                    for (let i = 0; i < 4; i++) { if (guessLetters[i] === secretLetters[i]) { cows++; secretLetters[i] = null; guessLetters[i] = null; } }
-                    for(let i = 0; i < 4; i++){ if(guessLetters[i] === null) continue; const bullIndex = secretLetters.indexOf(guessLetters[i]); if(bullIndex !== -1) { bulls++; secretLetters[bullIndex] = null; } }
-                    
-                    if (cows > 0 || bulls > 0) playSound('ding');
-                    
-                    const newGuess = { guess, cows, bulls };
-                    localGuessHistory.push(newGuess);
-                    updateHistory(localGuessHistory);
-                    
-                    if (gameMode === 'twoPlayerLocal' && scoreToBeat > 0 && attemptCount > scoreToBeat && !roundLost) {
-                        roundLost = true;
-                        const guesserName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
-                        const setterName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
-                        showMessage(`${guesserName}, you failed to beat the score! ${setterName} wins the point. You can still guess the word.`, 'warning');
-                        playSound('lose');
-                        
-                        (setterName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
-                        updateLocalScoreDisplay();
-                    }
+            document.getElementById('guessButton').addEventListener('click', handleGuess);
 
-                    if (cows === 4) { // Guessed the word
-                        if (sdk) sdk.game.happytime();
-                        if (roundLost) { 
-                            showMessage(`You found the word! It was "${secretWord}".`, 'info');
-                            rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
-                                <button id="playAgainLocal" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button>
-                                <button id="endMatchLocal" class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg">End Match</button>
-                            </div>`;
-                            rematchRequestArea.classList.remove('hidden');
-                            document.getElementById('playAgainLocal').onclick = startLocalRematch;
-                            document.getElementById('endMatchLocal').onclick = () => endMatch(false);
-                             guessControls.classList.add('hidden');
-                             gameControls.classList.add('hidden');
-                            return;
-                        }; 
-
-                        gameOver = true;
-                        guessControls.classList.add('hidden');
-                        gameControls.classList.add('hidden');
-                        
-                        if (gameMode === 'single') {
-                            stopTimer();
-                            showMessage(`You guessed it in ${attemptCount} attempts! Time: ${timerEl.textContent}`, 'success');
-                            playSound('win');
-                            triggerConfetti();
-                            rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4"><button id="playAgainSingle" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button><button id="mainMenuBtn" class="bg-slate-600 text-white font-bold py-2 px-5 rounded-lg">Main Menu</button></div>`;
-                            rematchRequestArea.classList.remove('hidden');
-                            document.getElementById('playAgainSingle').onclick = () => { playSound('click'); showScreen(difficultySelectionScreen); };
-                            document.getElementById('mainMenuBtn').onclick = () => { playSound('click'); goToMainMenu(); };
-                        } else { // 2 Player Local win
-                            if(scoreToBeat === 0) { // First round of a match
-                                scoreToBeat = attemptCount;
-                                const guesserName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
-                                const setterName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
-                                showMessage(`${guesserName} guessed it in ${attemptCount} attempts! ${setterName}, you must beat this score.`, 'success');
-                                playSound('win');
-                                triggerConfetti();
-                                rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4"><button id="nextRoundLocal" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Next Round</button></div>`;
-                                rematchRequestArea.classList.remove('hidden');
-                                document.getElementById('nextRoundLocal').onclick = () => { playSound('click'); startLocalRematch(); };
-                            } else { // Second round of a match, point is decided
-                                localGamesPlayed++;
-                                let messageText;
-
-                                if (attemptCount < scoreToBeat) {
-                                    const winnerName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
-                                    (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
-                                    p1Streak = (winnerName === player1LocalName) ? p1Streak + 1 : 0;
-                                    p2Streak = (winnerName === player2LocalName) ? p2Streak + 1 : 0;
-                                    messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
-                                    playSound('win');
-                                    triggerConfetti();
-                                } else if (attemptCount === scoreToBeat) {
-                                    player1LocalScore++;
-                                    player2LocalScore++;
-                                    p1Streak = 0; p2Streak = 0;
-                                    messageText = `It's a tie! Both players get a point. The word was "${secretWord}".`;
-                                    playSound('win');
-                                    triggerConfetti();
-                                } else { 
-                                    const winnerName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
-                                    (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
-                                    p1Streak = (winnerName === player1LocalName) ? p1Streak + 1 : 0;
-                                    p2Streak = (winnerName === player2LocalName) ? p2Streak + 1 : 0;
-                                    messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
-                                    playSound('win');
-                                    triggerConfetti();
-                                }
-                                
-                                updateLocalScoreDisplay(); 
-                                showMessage(messageText, 'success');
-                                scoreToBeat = 0; 
-                                
-                                rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
-                                    <button id="playAgainLocal" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button>
-                                    <button id="endMatchLocal" class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg">End Match</button>
-                                </div>`;
-                                 rematchRequestArea.classList.remove('hidden');
-                                 document.getElementById('playAgainLocal').onclick = () => { playSound('click'); startLocalRematch(); };
-                                 document.getElementById('endMatchLocal').onclick = () => { playSound('click'); endMatch(false); };
-                            }
-                        }
-                    } else if (!roundLost) { 
-                        messageArea.classList.add('hidden'); 
-                    }
-                    guessInput.value = ''; guessInput.focus();
-                }
-            });
-
-            guessInput.addEventListener('keyup', (e) => { 
+            document.getElementById('guessInput').addEventListener('keyup', (e) => { 
                 if (e.key === 'Enter') {
-                    guessButton.click(); 
-                } else {
-                    playSound('type');
+                    document.getElementById('guessButton').click(); 
                 }
             });
-            
-            quitButton.addEventListener('click', async () => {
+
+            document.getElementById('quitButton').addEventListener('click', () => {
                 playSound('click');
-                if (gameMode === 'twoPlayerOnline') {
-                    if(!currentOnlineGameData) return;
-                    const setterId = currentOnlineGameData.player1; // The current setter
-                    const payload = {
-                        winner: setterId,
-                        gameState: 'game_over'
-                    };
-
-                    if (currentOnlineGameData.score_to_beat > 0 || currentOnlineGameData.total_games_played === 0) {
-                        const isSetterP1Original = setterId === currentOnlineGameData.player1_original;
-                        const scoreField = isSetterP1Original ? 'player1_score' : 'player2_score';
-                        payload[scoreField] = increment(1);
-                        payload.total_games_played = increment(1);
-                        payload.score_to_beat = 0; // The match round is over, reset
-                        payload.p1_streak = isSetterP1Original ? increment(1) : 0;
-                        payload.p2_streak = !isSetterP1Original ? increment(1) : 0;
-                    }
-
-                    const gameRef = doc(db, `/artifacts/${appId}/public/data/games`, currentOnlineGameId);
-                    await updateDoc(gameRef, payload);
-
-                } else if (gameMode === 'twoPlayerLocal') {
-                    gameOver = true;
-                    guessControls.classList.add('hidden');
-                    gameControls.classList.add('hidden');
-                    
-                    const setterName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
-                    showMessage(`The word was "${secretWord}". ${setterName} wins the point!`, 'info');
-                    playSound('lose');
-
-                    if(scoreToBeat > 0 || localGamesPlayed === 0) {
-                        if (currentPlayerSetter === 1) {
-                            player1LocalScore++;
-                            p1Streak++;
-                            p2Streak=0;
-                        } else {
-                            player2LocalScore++;
-                            p2Streak++;
-                            p1Streak=0;
-                        }
-                        localGamesPlayed++;
-                    }
-                    scoreToBeat = 0; 
-                    updateLocalScoreDisplay();
-
-                    rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4">
-                        <button id="playAgainLocal" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button>
-                        <button id="endMatchLocal" class="bg-gradient-to-br from-red-500 to-rose-500 text-white font-bold py-2 px-5 rounded-lg">End Match</button>
-                    </div>`;
-                    rematchRequestArea.classList.remove('hidden');
-                    document.getElementById('playAgainLocal').onclick = () => { playSound('click'); startLocalRematch(); };
-                    document.getElementById('endMatchLocal').onclick = () => { playSound('click'); endMatch(false); };
-
-                } else { // single player
-                    gameOver = true;
-                    stopTimer();
-                    showMessage(`The word was "${secretWord}". Better luck next time!`, 'info');
-                    playSound('lose');
-                    guessControls.classList.add('hidden');
-                    gameControls.classList.add('hidden');
-                    rematchRequestArea.innerHTML = `<div class="flex justify-center gap-4"><button id="playAgainSingle" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button><button id="mainMenuBtn" class="bg-slate-600 text-white font-bold py-2 px-5 rounded-lg">Main Menu</button></div>`;
-                    rematchRequestArea.classList.remove('hidden');
-                    document.getElementById('playAgainSingle').onclick = () => { playSound('click'); showScreen(difficultySelectionScreen); };
-                    document.getElementById('mainMenuBtn').onclick = () => { playSound('click'); goToMainMenu(); };
-                }
+                handleQuit();
             });
+        }
+
+        function handleGuess() {
+            if (gameOver && !roundLost) return;
             
-            function handleNameEdit(spanElement, playerNum) {
-                const originalName = spanElement.textContent.replace(/ 🔥\d+/, '');
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.value = originalName;
-                input.className = 'bg-transparent text-center font-bold outline-none ring-2 ring-indigo-400 rounded-md w-24';
-                spanElement.innerHTML = '';
-                spanElement.appendChild(input);
-                input.focus();
+            const guess = document.getElementById('guessInput').value.toLowerCase();
+            const validationError = validateWord(guess);
+            if (validationError) { 
+                showMessage(validationError, 'error'); 
+                return; 
+            }
+            
+            attemptCount++; 
+            let cows = 0; 
+            let bulls = 0;
+            const secretLetters = secretWord.split(''); 
+            const guessLetters = guess.split('');
+            
+            // Count cows (correct position)
+            for (let i = 0; i < 4; i++) { 
+                if (guessLetters[i] === secretLetters[i]) { 
+                    cows++; 
+                    secretLetters[i] = null; 
+                    guessLetters[i] = null; 
+                } 
+            }
+            
+            // Count bulls (wrong position)
+            for(let i = 0; i < 4; i++){ 
+                if(guessLetters[i] === null) continue; 
+                const bullIndex = secretLetters.indexOf(guessLetters[i]); 
+                if(bullIndex !== -1) { 
+                    bulls++; 
+                    secretLetters[bullIndex] = null; 
+                } 
+            }
+            
+            if (cows > 0 || bulls > 0) playSound('ding');
+            
+            const newGuess = { guess, cows, bulls };
+            localGuessHistory.push(newGuess);
+            updateHistory(localGuessHistory);
+            
+            // Check if player lost in 2-player mode
+            if (gameMode === 'twoPlayerLocal' && scoreToBeat > 0 && attemptCount > scoreToBeat && !roundLost) {
+                roundLost = true;
+                const guesserName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
+                const setterName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
+                showMessage(`${guesserName}, you failed to beat the score! ${setterName} wins the point. You can still guess the word.`, 'info');
+                playSound('lose');
                 
-                const saveName = () => {
-                    let newName = input.value.trim();
-                    if (newName === "") {
-                        newName = originalName;
-                    }
-                    spanElement.textContent = newName;
-                     if (gameMode === 'twoPlayerLocal') {
-                         if(playerNum === 1) player1LocalName = newName;
-                         else player2LocalName = newName;
-                         updateLocalScoreDisplay();
-                    } else if (gameMode === 'twoPlayerOnline') {
-                         updateOnlineName(newName);
-                    }
-                };
-
-                input.addEventListener('blur', saveName);
-                input.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        saveName();
-                    }
-                });
+                (setterName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
+                updateLocalScoreDisplay();
             }
 
-            editP1NameBtn.addEventListener('click', () => handleNameEdit(p1NameSpan, 1));
-            editP2NameBtn.addEventListener('click', () => handleNameEdit(p2NameSpan, 2));
-
-            createOnlineGameButton.addEventListener('click', createOnlineGame);
-            joinOnlineGameButton.addEventListener('click', joinOnlineGame);
-
-             copyGameIdButton.addEventListener('click', () => {
-                 playSound('click');
-                 copyToClipboard(gameIdText.textContent, 'Game ID copied!');
-            });
-            
-            copyInviteLinkButton.addEventListener('click', async () => {
-                playSound('click');
-                if (sdk && currentOnlineGameId) {
-                    try {
-                        const inviteLink = await sdk.game.getInviteLink({ lobbyId: currentOnlineGameId });
-                        copyToClipboard(inviteLink, 'Invite link copied!');
-                    } catch (err) {
-                        console.error('Failed to get invite link:', err);
-                        showMainMessage('Could not generate invite link.', 'error');
-                    }
-                } else {
-                    showMainMessage('Invite links are only available on the host platform.', 'info');
+            // Check if word is guessed
+            if (cows === 4) {
+                triggerHappyTime();
+                gameOver = true;
+                document.getElementById('guessControls').classList.add('hidden');
+                document.getElementById('gameControls').classList.add('hidden');
+                
+                if (gameMode === 'single') {
+                    stopTimer();
+                    showMessage(`You guessed it in ${attemptCount} attempts! Time: ${document.getElementById('timer').textContent}`, 'success');
+                    playSound('win');
+                    triggerConfetti();
+                    showRematchOptions('single');
+                } else if (gameMode === 'twoPlayerLocal') {
+                    handleLocalGameEnd();
                 }
-            });
+            } else if (!roundLost) { 
+                messageArea.classList.add('hidden'); 
+            }
             
+            document.getElementById('guessInput').value = '';
+            document.getElementById('guessInput').focus();
         }
 
-        // --- Initial Load ---
-        let sdk; // Define a global sdk variable
-        let gameplayHasStarted = false;
-
-        async function main() {
-            if (window.CrazyGames && window.CrazyGames.SDK) {
-                 try {
-                    sdk = await window.CrazyGames.SDK.getInstance();
-                    console.log("CrazyGames SDK initialized.");
-
-                    sdk.addEventListener('adStarted', () => console.log('Ad started'));
-                    sdk.addEventListener('adError', () => console.log('Ad error'));
-                    sdk.addEventListener('adFinished', () => console.log('Ad finished'));
-
-                } catch (error) {
-                    console.warn("CrazyGames SDK failed to initialize or is not available:", error);
-                }
+        function handleLocalGameEnd() {
+            if (roundLost) { 
+                showMessage(`You found the word! It was "${secretWord}".`, 'info');
+                showRematchOptions('local');
+                return;
             }
-           
 
-            const savedMuteState = localStorage.getItem('muted') === 'true';
-            Tone.Destination.mute = savedMuteState;
+            if (scoreToBeat === 0) { // First round of a match
+                scoreToBeat = attemptCount;
+                const guesserName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
+                const setterName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
+                showMessage(`${guesserName} guessed it in ${attemptCount} attempts! ${setterName}, you must beat this score.`, 'success');
+                playSound('win');
+                triggerConfetti();
+                showRematchOptions('nextRound');
+            } else { // Second round of a match, point is decided
+                localGamesPlayed++;
+                let messageText;
 
-            const initializeGame = () => {
-                 initializeFirebase().then(() => {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    const lobbyId = urlParams.get('lobby');
+                if (attemptCount < scoreToBeat) {
+                    const winnerName = currentPlayerSetter === 1 ? player2LocalName : player1LocalName;
+                    (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
+                    messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
+                    playSound('win');
+                    triggerConfetti();
+                } else if (attemptCount === scoreToBeat) {
+                    player1LocalScore++;
+                    player2LocalScore++;
+                    messageText = `It's a tie! Both players get a point. The word was "${secretWord}".`;
+                    playSound('win');
+                    triggerConfetti();
+                } else { 
+                    const winnerName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
+                    (winnerName === player1LocalName) ? player1LocalScore++ : player2LocalScore++;
+                    messageText = `${winnerName} wins the point! The word was "${secretWord}".`;
+                    playSound('win');
+                    triggerConfetti();
+                }
+                
+                updateLocalScoreDisplay(); 
+                showMessage(messageText, 'success');
+                scoreToBeat = 0; 
+                showRematchOptions('local');
+            }
+        }
 
-                    if (lobbyId) {
-                        if (sdk && !gameplayHasStarted) {
-                            sdk.game.gameplayStart();
-                            gameplayHasStarted = true;
-                            console.log("CrazyGames SDK gameplayStart() called from invite link.");
-                        }
-                        console.log('Lobby ID found in URL:', lobbyId);
-                        gameMode = 'twoPlayerOnline';
-                        showScreen(onlineLobbyScreen);
-                        joinGameIdInput.value = lobbyId;
-                        joinGameIdInput.disabled = true;
-                        joinOnlineGameButton.disabled = true;
-                        createOnlineGameButton.disabled = true;
-                        joinOnlineGame();
+        function showRematchOptions(type) {
+            let content = '';
+            if (type === 'single') {
+                content = `<div class="flex justify-center gap-4">
+                    <button id="playAgainSingle" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button>
+                    <button id="mainMenuBtn" class="bg-gray-600 text-white font-bold py-2 px-5 rounded-lg">Main Menu</button>
+                </div>`;
+            } else if (type === 'nextRound') {
+                content = `<div class="flex justify-center gap-4">
+                    <button id="nextRoundLocal" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Next Round</button>
+                </div>`;
+            } else if (type === 'local') {
+                content = `<div class="flex justify-center gap-4">
+                    <button id="playAgainLocal" class="bg-gradient-to-br from-blue-600 to-sky-600 text-white font-bold py-2 px-5 rounded-lg">Play Again</button>
+                    <button id="endMatchLocal" class="bg-gradient-to-br from-red-500 to-red-600 text-white font-bold py-2 px-5 rounded-lg">End Match</button>
+                </div>`;
+            }
+
+            rematchRequestArea.innerHTML = content;
+            rematchRequestArea.classList.remove('hidden');
+
+            // Add event listeners
+            const playAgainSingle = document.getElementById('playAgainSingle');
+            const mainMenuBtn = document.getElementById('mainMenuBtn');
+            const nextRoundLocal = document.getElementById('nextRoundLocal');
+            const playAgainLocal = document.getElementById('playAgainLocal');
+            const endMatchLocal = document.getElementById('endMatchLocal');
+
+            if (playAgainSingle) playAgainSingle.onclick = () => { playSound('click'); showScreen(difficultySelectionScreen); };
+            if (mainMenuBtn) mainMenuBtn.onclick = () => { playSound('click'); goToMainMenu(); };
+            if (nextRoundLocal) nextRoundLocal.onclick = () => { playSound('click'); startLocalRematch(); };
+            if (playAgainLocal) playAgainLocal.onclick = () => { playSound('click'); startLocalRematch(); };
+            if (endMatchLocal) endMatchLocal.onclick = () => { playSound('click'); goToMainMenu(); };
+        }
+
+        function handleQuit() {
+            gameOver = true;
+            document.getElementById('guessControls').classList.add('hidden');
+            document.getElementById('gameControls').classList.add('hidden');
+            
+            if (gameMode === 'single') {
+                stopTimer();
+                showMessage(`The word was "${secretWord}". Better luck next time!`, 'info');
+                playSound('lose');
+                showRematchOptions('single');
+            } else if (gameMode === 'twoPlayerLocal') {
+                const setterName = currentPlayerSetter === 1 ? player1LocalName : player2LocalName;
+                showMessage(`The word was "${secretWord}". ${setterName} wins the point!`, 'info');
+                playSound('lose');
+
+                if(scoreToBeat > 0 || localGamesPlayed === 0) {
+                    if (currentPlayerSetter === 1) {
+                        player1LocalScore++;
                     } else {
-                        showScreen(startScreen);
+                        player2LocalScore++;
                     }
-
-                    setupEventListeners();
-                });
-            };
-            
-            initializeGame();
-        }
-        
-        window.onload = main;
-
-
-        // --- Sound Effects ---
-        let soundsReady = false;
-        
-        document.body.addEventListener('click', async () => {
-            if (!soundsReady) {
-                await Tone.start();
-                console.log('Audio context started');
-                soundsReady = true;
-            }
-        }, { once: true });
-        
-        const sounds = {
-            click: new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination(),
-            type: new Tone.MembraneSynth({ pitchDecay: 0.008, octaves: 2, envelope: { attack: 0.001, decay: 0.2, sustain: 0 } }).toDestination(),
-            ding: new Tone.MetalSynth({ frequency: 300, envelope: { attack: 0.001, decay: 0.1, release: 0.01 }, harmonicity: 3.1, modulationIndex: 16, resonance: 4000, octaves: 1.5 }).toDestination(),
-            win: new Tone.PolySynth(Tone.Synth, { oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 } }).toDestination(),
-            lose: new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.1 } }).toDestination(),
-        };
-
-        function playSound(sound) {
-            if (!soundsReady || Tone.Destination.mute) return;
-            switch(sound) {
-                case 'click': sounds.click.triggerAttackRelease('C5', '8n'); break;
-                case 'type': sounds.type.triggerAttackRelease('C2', '8n', Tone.now()); break;
-                case 'ding': sounds.ding.triggerAttackRelease('C5', '8n'); break;
-                case 'win': sounds.win.triggerAttackRelease(['C5', 'E5', 'G5'], '8n'); break;
-                case 'lose': sounds.lose.triggerAttackRelease('C3', '4n'); break;
+                    localGamesPlayed++;
+                }
+                scoreToBeat = 0; 
+                updateLocalScoreDisplay();
+                showRematchOptions('local');
             }
         }
 
-        // --- Timer Logic ---
-        function startTimer() {
-            let seconds = 0;
-            timerDisplay.classList.remove('hidden');
-            timerEl.textContent = '0s';
-            timerInterval = setInterval(() => {
-                seconds++;
-                timerEl.textContent = `${seconds}s`;
-            }, 1000);
+        function updateThemeIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            document.getElementById('theme-icon-light').classList.toggle('hidden', isDark);
+            document.getElementById('theme-icon-dark').classList.toggle('hidden', !isDark);
         }
 
-        function stopTimer() {
-            clearInterval(timerInterval);
+        function updateMuteIcons() {
+            const isMuted = Tone.Destination?.mute || false;
+            document.getElementById('unmuteIcon').classList.toggle('hidden', isMuted);
+            document.getElementById('muteIcon').classList.toggle('hidden', !isMuted);
         }
 
-        // --- Confetti Logic ---
-        function triggerConfetti() {
-            const container = document.getElementById('confetti-container');
-            const colors = ['#a855f7', '#6366f1', '#10b981', '#f59e0b', '#ef4444'];
-            for (let i = 0; i < 100; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.left = `${Math.random() * 100}%`;
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animation = `fall ${2 + Math.random() * 2}s ${Math.random()}s linear forwards`;
-                container.appendChild(confetti);
+        // Initialize the game
+        async function initializeGame() {
+            // Initialize CrazyGames SDK
+            await initializeCrazyGamesSDK();
 
-                setTimeout(() => confetti.remove(), 4000);
+            // Set initial theme
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const savedMute = localStorage.getItem('muted') === 'true';
+                
+                if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+                
+                if (Tone.Destination) {
+                    Tone.Destination.mute = savedMute;
+                }
+            } catch (e) {
+                console.warn('localStorage not available, using defaults');
             }
+
+            updateThemeIcons();
+            updateMuteIcons();
+            setupEventListeners();
+            showScreen(startScreen);
         }
+
+        // Start the game when page loads
+        window.addEventListener('load', initializeGame);
     </script>
 </body>
-</html>
-
-
+</html>  
